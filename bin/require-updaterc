@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -euo pipefail
+
+usage() {
+    echo "Register an update command"
+    echo
+    echo "Usage: $(basename "$0") <name> <command>"
+    echo
+    echo "Arguments:"
+    echo "    name      Descriptive filename for the update script"
+    echo "    command   Command to be written as update script"
+}
+
+# Read arguments
+name=$1
+command=$2
+
+# Check required arguments
+if [ -z "$name" ] || [ -z "$command" ]; then
+    usage
+    exit 1
+fi
+
+# Check name format
+if ! [[ $name =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "Name can only contain a-z, A-Z, 0-9, dashes and underscores" >&2
+    exit 1
+fi
+
+# Create directory
+dir="$HOME/.updaterc.d"
+if [ ! -d "$dir" ]; then
+    mkdir -p "$dir"
+fi
+
+# Write file
+file="$dir/$name"
+echo "$command" > "$file"

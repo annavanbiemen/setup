@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -euo pipefail
+
+usage() {
+    echo "Usage: $(basename "$0") [shell] ... <url>"
+    echo
+    echo "Arguments:"
+    echo "  shell   SHELL to pipe the script to (e.g. 'bash')"
+    echo "  url     URL to fetch the script from"
+}
+
+# Check argument count
+if [ "$#" -eq 0 ]; then
+    usage
+    exit 1
+fi
+
+url="${!#}"
+shell=()
+for ((i=1; i<$#; i++)); do
+    shell+=("${!i}")
+done
+if [ $# -eq 1 ]; then
+    shell+=("sh")
+fi
+
+curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "$url" | "${shell[@]}"

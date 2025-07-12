@@ -1,0 +1,7 @@
+try:
+    from rich import pretty, print, traceback
+except ModuleNotFoundError:
+    pass
+else:
+    pretty.install()
+    traceback.install()

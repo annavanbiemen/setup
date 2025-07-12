@@ -1,0 +1,5 @@
+# Default (has to be at the bottom if you want to override settings)
+Host *
+    ForwardAgent yes
+    ServerAliveInterval 60
+

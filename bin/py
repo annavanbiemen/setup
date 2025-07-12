@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Setup Python + UV
+if [ -z "$(which uvx )" ]; then
+    if [ ! -f "$HOME/.local/bin/uvx" ]; then
+        setup uv
+    fi
+fi
+
+# Python startup script
+PYTHONSTARTUP="$( dirname "$( dirname "$0" )" )/etc/pythonrc"
+export PYTHONSTARTUP
+
+# Download and invoke Python 3.14 using uvx
+uvx --python 3.14 --with rich -- python "$@"

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -euo pipefail
+cd "$( dirname "$( dirname "$0" )" )"
+source ./env
+
+# Require just
+require-apt just
+
+# Run tasks using just
+just "$@"
