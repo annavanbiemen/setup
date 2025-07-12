@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Load ~/.path
+if [ -f ~/.path ]; then
+    while IFS= read -r _path; do
+        # Skip any empty lines in the file.
+        if [ -z "$_path" ]; then
+            continue
+        fi
+
+        # Check if the path points to an actual directory.
+        if [ ! -d "$_path" ]; then
+            echo "Skipping: '$_path' is not a valid directory."
+            continue
+        fi
+
+        # check if path is already included
+        case ":${PATH}:" in
+            *:"$_path":*)
+                ;;
+            *)
+                export PATH="$_path:$PATH"
+                ;;
+        esac
+    done < ~/.path
+    unset _path
+fi
+
+# Load ~/.env
+if [ -f ~/.env ]; then
+    export $(grep -v '^#' ~/.env | xargs)
+fi
+
+# Include VIRTUAL_ENV_PROMPT in the prompt
+if [ "${VIRTUAL_ENV_DISABLE_PROMPT:-}" != "1" ] && [ -n "${PS1+x}" ]; then
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    PS1='${VIRTUAL_ENV_PROMPT:+($VIRTUAL_ENV_PROMPT) }'$PS1
+fi

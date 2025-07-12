@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Check usage
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $(basename "$0") <url>"
+    exit 1
+fi
+
+# Read arguments
+url="$1"
+
+# Download deb into temporary directory and install
+dir=$(mktemp -d)
+curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail --output "$dir/package.deb" "$url"
+if ! sudo dpkg --install "$dir/package.deb"; then
+    sudo apt-get install --update --fix-broken --yes
+fi

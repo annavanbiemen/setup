@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -euo pipefail
+
+bold="\e[1m"
+red="\e[31m"
+reset="\e[0m"
+
+user=$( whoami )
+file="/etc/sudoers.d/90-update-$user"
+install_sudoers() {
+    tempfile=$( mktemp )
+    {
+        echo "$user ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
+        echo "$user ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
+    } > "$tempfile"
+    visudo -c "$tempfile"
+    echo "Writing $file"
+    sudo install -o root -g root -m 440 "$tempfile" "$file"
+}
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --install-sudoers) install_sudoers; exit ;;
+        *) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
+    esac
+    shift
+done
+
+if [ ! -f "$file" ]; then
+    echo -e "Tired of password prompts? Run ${bold}update --install-sudoers${reset}"
+    echo
+fi
+
+# apt
+echo -e "${bold}# apt${reset}"
+/usr/bin/sudo /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes
+
+# snap
+if [ -n "$( which snap )" ]; then
+    echo
+    echo -e "${bold}# snap${reset}"
+    /usr/bin/sudo /usr/bin/snap refresh
+fi
+
+# Source files in updaterc.d
+shopt -s nullglob
+for file in ~/.updaterc.d/*; do
+    echo
+    echo -e "${bold}# $(basename "$file")${reset}"
+    # shellcheck source=/dev/null
+    . "$file"
+done
+
+# Warn about reboot
+if [ -f /var/run/reboot-required ]; then
+    echo
+    echo -e "${red}${bold}  !!! SYSTEM REBOOT REQUIRED !!!${reset}" >&2e
+    echo
+fi

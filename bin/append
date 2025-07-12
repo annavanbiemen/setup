@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -euo pipefail
+
+usage() {
+    echo "Append missing line(s) to file"
+    echo
+    echo "Usage: $( basename "$0" ) <file> <line1> [<line2> ...]"
+    echo
+    echo "Arguments:"
+    echo "  file        File to append to"
+    echo "  line1 ...   Lines to append (unless already present) one by one"
+}
+
+if [ "$#" -lt 2 ]; then
+    usage
+    exit 1
+fi
+
+file="$1"
+shift
+if [ -d "$file" ]; then
+    echo "ERROR: cannot append lines to a directory"
+    exit 2
+fi
+
+while [[ "$#" -gt 0 ]]; do
+    line="$1"
+    shift
+
+    if [ -f "$file" ] && grep -qxF "$line" "$file"; then
+        continue
+    fi
+
+    echo "$line" >> "$file"
+done

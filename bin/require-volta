@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Check if at least one package name is provided
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $(basename "$0") <package> [ <package> ...]"
+    exit 1
+fi
+
+# Satisfy Volta environment requirements
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Install missing packages
+echo "volta install" "$@"
+volta install "$@"
