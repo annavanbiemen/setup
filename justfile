@@ -20,6 +20,10 @@ chrome:
 claude: volta
     require-volta @anthropic-ai/claude-code
 
+# https://direnv.net/
+direnv:
+    require-apt direnv
+
 # https://docs.docker.com/engine/install/ubuntu/
 docker:
     require-apt docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
