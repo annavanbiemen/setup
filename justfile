@@ -91,6 +91,7 @@ composer: git php
     require-sh php -- --install-dir="$HOME/.local/bin" --filename=composer "https://getcomposer.org/installer"
     require-updaterc composer "$HOME/.local/bin/composer self-update"
     append ~/.bashrc 'eval "$(composer completion bash)"'
+    append ~/.path '$HOME/.config/composer/vendor/bin'
 
 # https://symfony.com/download
 symfony: composer git php
