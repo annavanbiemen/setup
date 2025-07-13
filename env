@@ -9,6 +9,7 @@ fi
 
 # Load ~/.path
 if [ -f ~/.path ]; then
+    _paths=""
     while IFS= read -r _path; do
         # Skip any empty lines in the file.
         if [ -z "$_path" ]; then
@@ -21,16 +22,21 @@ if [ -f ~/.path ]; then
             continue
         fi
 
-        # check if path is already included
+        # Check if path is already included
         case ":${PATH}:" in
             *:"$_path":*)
                 ;;
             *)
-                export PATH="$_path:$PATH"
+                _paths="$_paths$_path:"
                 ;;
         esac
     done < ~/.path
-    unset _path
+
+    # Insert paths
+    export PATH="$_paths$PATH"
+
+    # Cleanup
+    unset _path _paths
 fi
 
 # Include VIRTUAL_ENV_PROMPT in the prompt
