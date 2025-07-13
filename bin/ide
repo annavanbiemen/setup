@@ -7,10 +7,6 @@ python="pycharm $default"
 php="phpstorm $default"
 rust="rustrover $default"
 
-ide() {
-	return
-}
-
 launch() {
 	dir="$2"
 	if [ "$dir" = "$PWD" ]; then
