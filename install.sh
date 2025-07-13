@@ -47,14 +47,15 @@ if [ -z "$name" ] || [ -z "$email" ]; then
 fi
 
 setup="$( dirname "$( realpath "$0")" )"
+setup_relative="${setup/"$HOME/"/}"
 sourceline=". \"${setup/"$HOME"/"\$HOME"}/env\""
 export PATH="$setup/bin:$PATH"
 
 cd ~
 append .profile "$sourceline"
 append .bashrc "$sourceline"
-append .path "$HOME/.local/bin" && mkdir -p ~/.local/bin
-append .path "$setup/bin"
+append .path ".local/bin" && mkdir -p ~/.local/bin
+append .path "$setup_relative/bin"
 append .env "NAME=\"$name\""
 append .env "EMAIL=\"$email\""
 
