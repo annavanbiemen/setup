@@ -16,6 +16,9 @@ if [ -f ~/.path ]; then
             continue
         fi
 
+        # Make sure we have an absolute path
+        [ "$_path" != "${_path#/}" ] || _path="$HOME/$_path"
+
         # Check if the path points to an actual directory.
         if [ ! -d "$_path" ]; then
             echo "Skipping: '$_path' is not a valid directory."
