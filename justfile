@@ -71,7 +71,7 @@ volta:
     require-volta node
     require-updaterc volta "$HOME/.volta/bin/volta-migrate"
     append ~/.env 'VOLTA_HOME="$HOME/.volta"'
-    append ~/.path "$HOME/.volta/bin"
+    append ~/.path ".volta/bin"
     append ~/.bashrc 'eval "$(volta completions bash)"'
 
 # https://rustup.rs/
