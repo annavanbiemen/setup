@@ -67,9 +67,11 @@ node: volta
 
 # https://volta.sh/
 volta:
-    require-sh bash https://get.volta.sh
+    require-sh bash -s -- --skip-setup https://get.volta.sh
     require-volta node
     require-updaterc volta "$HOME/.volta/bin/volta-migrate"
+    append ~/.env 'VOLTA_HOME="$HOME/.volta"'
+    append ~/.path "$HOME/.volta/bin"
     append ~/.bashrc 'eval "$(volta completions bash)"'
 
 # https://rustup.rs/
