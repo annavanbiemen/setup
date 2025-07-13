@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Load ~/.env
+if [ -f ~/.env ]; then
+    export $(grep -v '^#' ~/.env | xargs)
+fi
+
 # Load ~/.path
 if [ -f ~/.path ]; then
     while IFS= read -r _path; do
@@ -24,11 +29,6 @@ if [ -f ~/.path ]; then
         esac
     done < ~/.path
     unset _path
-fi
-
-# Load ~/.env
-if [ -f ~/.env ]; then
-    export $(grep -v '^#' ~/.env | xargs)
 fi
 
 # Include VIRTUAL_ENV_PROMPT in the prompt
