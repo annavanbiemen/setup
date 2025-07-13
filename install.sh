@@ -17,7 +17,7 @@ echo -e "    🔸 ${bold}ide${reset} to open your IDE in the current project."
 echo -e "    🔸 ${bold}py${reset} to start a Python repl with rich colors."
 echo
 
-# Read name/email from .env
+# Read name and email from .env
 if [ -f ~/.env ]; then
     # shellcheck source=/dev/null
     source ~/.env
@@ -25,7 +25,7 @@ fi
 name="${NAME:-}"
 email="${EMAIL:-}"
 
-# Read name/email from arguments
+# Read name and email from arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --name) name="$2"; shift ;;
@@ -35,7 +35,7 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-# Read name/email from input
+# Read name and email from input
 if [ -z "$name" ] || [ -z "$email" ]; then
     echo "  Lets start with a little introduction first."
     echo
@@ -46,21 +46,24 @@ if [ -z "$name" ] || [ -z "$email" ]; then
     echo
 fi
 
-setup="$( dirname "$( realpath "$0")" )"
-setup_relative="${setup/"$HOME/"/}"
-sourceline=". \"${setup/"$HOME"/"\$HOME"}/env\""
-export PATH="$setup/bin:$PATH"
+# Determine paths and source line
+setup_path="$( dirname "$( realpath "$0")" )"
+setup_path_relative="${setup_path/"$HOME/"/}"
+setup_source_line=". \"${setup_path/"$HOME"/"\$HOME"}/env\""
+
+# Add bin directory to PATH
+PATH="$setup_path/bin:$PATH"
 
 cd ~
-append .profile "$sourceline"
-append .bashrc "$sourceline"
-append .path ".local/bin" && mkdir -p ~/.local/bin
-append .path "$setup_relative/bin"
+append .profile "$setup_source_line"
+append .bashrc "$setup_source_line"
+append .path "$setup_path_relative/bin"
+append .path ".local/bin" && mkdir -p .local/bin
 append .env "NAME=\"$name\""
 append .env "EMAIL=\"$email\""
 
 echo
 echo "  Setup done! 🎉"
 echo
-echo "  $sourceline # or start a new shell to activate"
+echo "  $setup_source_line # or start a new shell to activate"
 echo
