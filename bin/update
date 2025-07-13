@@ -24,7 +24,6 @@ while [[ "$#" -gt 0 ]]; do
         --install-sudoers) install_sudoers; exit ;;
         *) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
     esac
-    shift
 done
 
 if [ ! -f "$file" ]; then
