@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Exit on errors
+set -euo pipefail
+
+# Import module
+import() {
+    local module="$1"
+
+    # shellcheck source=/dev/null
+    source "$( dirname "${BASH_SOURCE[0]}" )/${module}"
+}
+
+# Import functions from module
+from() {
+    local module="$1"
+    local operation="$2"
+    local functions=("${@:3}")
+
+    [[ "${#functions[@]}" -gt 0 ]] || raise echo "from: No function arguments given"
+    [[ "$operation" == "import" ]] || raise echo "from: Second argument must be 'import'"
+
+    local function
+    import "$module"
+    for function in "${functions[@]}"; do
+        eval "function ${function} { ${module}::${function} \"\$@\"; }"
+    done
+}
+
+# Raise code 1 and optionally send output from a command to STDERR
+raise() {
+    if [[ "$#" -gt 0 ]]; then
+        "$@" >&2
+    fi
+
+    return 1
+}
+
+# Print trace including arguments (if extdebug was enabled)
+trace() {
+    printf "\n\e[4mTrace\e[0m\n"
+    local frame arg arg_count arg_pos=${BASH_ARGC[0]} file line call
+    for ((frame = 1; frame < ${#FUNCNAME[@]}; frame++)); do
+        arg_count=${BASH_ARGC[frame]}
+        arg_pos=$((arg_pos + arg_count))
+
+        file="${BASH_SOURCE[$frame]}"
+        line="${BASH_LINENO[$((frame - 1))]}"
+        call="${FUNCNAME[frame]}"
+        for ((arg = 1; arg <= arg_count; arg++)); do
+            call+=$(printf " %q" "${BASH_ARGV[arg_pos - arg]}")
+        done
+
+        printf "%2d %-30s  # %s:%s\n" "$frame" "$call" "$file" "$line"
+    done
+}
+
+# Enable extdebug to keep track of arguments and handle ERR exit using a trace
+debug() {
+    shopt -s extdebug
+    trap trace ERR
+}
