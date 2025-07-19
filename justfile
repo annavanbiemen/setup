@@ -143,12 +143,3 @@ vscode:
         --key "https://packages.microsoft.com/keys/microsoft.asc"
     require-updaterc code "code --update-extensions"
     code --version
-
-# https://marketplace.visualstudio.com/VSCode
-vscode-extensions: vscode
-    code --install-extension ms-azuretools.vscode-containers
-    code --install-extension ms-python.debugpy
-    code --install-extension ms-python.python
-    code --install-extension ms-python.vscode-pylance
-    code --install-extension ms-vscode.makefile-tools
-    code --install-extension nefrob.vscode-just-syntax
