@@ -37,10 +37,6 @@ docker:
         --component stable
     sudo usermod -aG docker "$(whoami)"
 
-# https://www.jetbrains.com/toolbox-app/
-jetbrains:
-    require-sh "https://raw.githubusercontent.com/nagygergo/jetbrains-toolbox-install/master/jetbrains-toolbox.sh"
-
 # https://github.com/google-gemini/gemini-cli
 gemini: volta
     require-volta @google/gemini-cli
