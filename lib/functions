@@ -60,3 +60,56 @@ debug() {
     shopt -s extdebug
     trap trace ERR
 }
+
+# Run command with option enabled
+with() {
+    local option="$1"
+    shift
+
+    if shopt -p "$option"  > /dev/null; then
+        "$@"
+        return $?
+    fi
+
+    shopt -s "$option" > /dev/null
+    "$@"
+    local exit=$?
+    shopt -u "$option" > /dev/null
+
+    return $exit
+}
+
+# Show usage information
+usage() {
+    local function="${1:-main}"
+
+    # Determine file where function was defined
+    local info file
+    IFS=" " read -r -a info <<< "$(with extdebug declare -F "$function")"
+    file="${info[2]}"
+
+    # Use awk to parse the usage information
+    awk -v func="$function" '
+    $0 ~ "^(function[[:space:]]+)?" func "[[:space:]]*\\([[:space:]]*\\)" {
+        if (comment_block) {
+            # Print the stored comments, removing the final newline
+            printf "%s", substr(comment_block, 1, length(comment_block))
+        }
+        exit
+    }
+    /^[[:space:]]*#/ {
+        line = $0
+        sub(/^[[:space:]]*#[[:space:]]?/, "", line)
+        comment_block = comment_block line "\n"
+        next
+    }
+    /./ {
+        comment_block = ""
+    }
+    ' "$file"
+}
+
+# Show version information
+version() {
+    git -C "$( dirname "$0" )" describe --always --dirty
+}
