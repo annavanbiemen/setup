@@ -5,8 +5,8 @@ FROM ubuntu:latest
 ARG TZ=Etc/UTC
 
 # Install packages
-RUN ( echo $TZ > /etc/timezone ) && \
-    TZ=$TZ DEBIAN_FRONTEND=noninteractive apt install --update --yes curl just sudo tzdata && \
+RUN ( echo $TZ > /etc/timezone ) && TZ=$TZ DEBIAN_FRONTEND=noninteractive \
+    apt-get install --update --yes --no-install-recommends curl just sudo tzdata && \
     rm -rf /var/lib/apt/lists/*
 
 # Add demo user with sudo privileges
