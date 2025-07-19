@@ -6,38 +6,27 @@ set -euo pipefail
 # Source functions lib
 source "$( dirname "$( dirname "$0" )" )/lib/functions"
 
-# Import functions
-from console import error title
-
-# Show usage information
-usage() {
-    title "Template"
-    echo
-    echo "Usage: $( basename "$0" ) [options]"
-    echo
-    echo "Options:"
-    echo "  -d, --debug     Show debug output"
-    echo "  -h, --help      Show usage information"
-    echo "  -v, --version   Show version information"
-}
-
-# Show version information
-version() {
-    git -C "$( dirname "$0" )" describe --always --dirty
-}
-
-# Main function
+# Template script
+#
+# Usage: template [options]
+#
+# Options:
+#   -d, --debug     Show debug output
+#   -h, --help      Show usage information
+#   -v, --version   Show version information
 main() {
+    # Parse arguments
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
             -d|--debug) debug ;;
             -h|--help) usage; exit 0 ;;
             -v|--version) version; exit 0 ;;
+            -*) raise echo "Unknown option passed: $1" ;;
             *) raise echo "Unknown argument passed: $1" ;;
         esac
         shift
     done
 }
 
-# Invoke main
+# Invoke main entrypoint
 main "$@"
