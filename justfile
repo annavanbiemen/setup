@@ -1,7 +1,10 @@
+# shellcheck shell=bash disable=SC2016
+
 # Print usage by default
 @_default:
     echo "Usage: setup <recipe> [ <recipe> ... ]"
     echo
+    # shellcheck disable=all
     "{{ just_executable() }}" --justfile "{{ justfile() }}" --list
 
 # https://github.com/Azure/azure-cli
@@ -32,7 +35,7 @@ docker:
         --key "https://download.docker.com/linux/ubuntu/gpg" \
         --suite-codename \
         --component stable
-    sudo usermod -aG docker $(whoami)
+    sudo usermod -aG docker "$(whoami)"
 
 # https://www.jetbrains.com/toolbox-app/
 jetbrains:
