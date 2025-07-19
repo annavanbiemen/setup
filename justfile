@@ -83,7 +83,7 @@ php:
     require-apt php php-cli php-mbstring php-xml php-zip \
         --source ondrej-php \
         --uri "https://ppa.launchpadcontent.net/ondrej/php/ubuntu" \
-        --key "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x4F4EA0AAE5267A6C" \
+        --key "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB8DC7E53946656EFBCE4C1DD71DAEAAB4AD4CAB6" \
         --suite-codename
 
 # https://getcomposer.org/download/
