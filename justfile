@@ -10,7 +10,7 @@
 # https://github.com/Azure/azure-cli
 azure:
     require-sh sudo bash "https://aka.ms/InstallAzureCLIDeb"
-    require-updaterc az "sudo /usr/bin/az upgrade"
+    update --add az "sudo /usr/bin/az upgrade"
     az --version | head -n1
 
 # https://www.google.com/chrome/
@@ -78,17 +78,17 @@ node: volta
 volta:
     require-sh bash -s -- --skip-setup https://get.volta.sh
     require-volta node
-    require-updaterc volta "$HOME/.volta/bin/volta-migrate"
+    update --add volta "$HOME/.volta/bin/volta-migrate"
     append ~/.env 'VOLTA_HOME="$HOME/.volta"'
     append ~/.path ".volta/bin"
     append ~/.bashrc 'eval "$(volta completions bash)"'
-    volta --version
+    "$HOME/.volta/bin/volta" --version
 
 # https://rustup.rs/
 rust:
     require-sh "https://sh.rustup.rs"
-    require-updaterc rustup "$HOME/.cargo/bin/rustup update"
-    rustc --version
+    update --add rustup "$HOME/.cargo/bin/rustup update"
+    "$HOME/.cargo/bin/rustc" --version
 
 # https://deb.sury.org/
 php:
@@ -103,7 +103,7 @@ php:
 composer: git php
     require-apt unzip
     require-sh php -- --install-dir="$HOME/.local/bin" --filename=composer "https://getcomposer.org/installer"
-    require-updaterc composer "$HOME/.local/bin/composer self-update"
+    update --add composer "$HOME/.local/bin/composer self-update"
     append ~/.bashrc 'eval "$(composer completion bash)"'
     append ~/.path ".config/composer/vendor/bin"
     composer --version
@@ -123,7 +123,7 @@ tilix:
 # https://docs.astral.sh/uv/
 uv:
     require-sh https://astral.sh/uv/install.sh
-    require-updaterc uv "$HOME/.local/bin/uv self update"
+    update --add uv "$HOME/.local/bin/uv self update"
     append ~/.bashrc 'eval "$(uv generate-shell-completion bash)"'
     append ~/.bashrc 'eval "$(uvx --generate-shell-completion bash)"'
     uv --version
@@ -141,5 +141,5 @@ vscode:
         --source vscode \
         --uri "https://packages.microsoft.com/repos/code" \
         --key "https://packages.microsoft.com/keys/microsoft.asc"
-    require-updaterc code "code --update-extensions"
+    update --add code "code --update-extensions"
     code --version

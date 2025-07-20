@@ -1,28 +1,35 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
-usage() {
-    echo "Usage: $(basename "$0") [shell] ... <url>"
-    echo
-    echo "Arguments:"
-    echo "  shell   SHELL to pipe the script to (e.g. 'bash')"
-    echo "  url     URL to fetch the script from"
+# Import libraries
+import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::from standard import error raise usage
+
+# Require execution of a remote shell script
+#
+# Usage: require-sh [shell] ... <url>
+#
+# Arguments:
+#   shell   Shell to pipe the script to (default: sh)
+#   url     URL to fetch the script from
+main() {
+    # Read arguments
+    [ $# -eq 0 ] || raise usage
+    local url="${!#}"
+    local shell=("sh")
+    if [ $# -gt 1 ]; then
+        shell=("${@::$#-1}")
+    fi
+
+    # Require packages
+    require-apt ca-certificates curl
+
+    # Download script and pipe to the given shell
+    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "$url" \
+        | "${shell[@]}"
 }
 
-# Check argument count
-if [ "$#" -eq 0 ]; then
-    usage
-    exit 1
-fi
-
-url="${!#}"
-shell=()
-for ((i=1; i<$#; i++)); do
-    shell+=("${!i}")
-done
-if [ $# -eq 1 ]; then
-    shell+=("sh")
-fi
-
-curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "$url" | "${shell[@]}"
+# Invoke main entrypoint
+main "$@"

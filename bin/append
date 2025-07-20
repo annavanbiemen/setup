@@ -1,36 +1,67 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
-usage() {
-    echo "Append missing line(s) to file"
-    echo
-    echo "Usage: $( basename "$0" ) <file> <line1> [<line2> ...]"
-    echo
-    echo "Arguments:"
-    echo "  file        File to append to"
-    echo "  line1 ...   Lines to append (unless already present) one by one"
+# Import libraries
+import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::from standard import debug error raise usage version
+
+# Append missing lines to file
+#
+# Usage: append <file> <line> [<line> ...]
+#
+# Arguments:
+#   file        File to append to
+#   line ...    Lines to append (unless already present) one by one
+append() {
+    # Read arguments
+    [[ $# -ge 2 ]] || raise error "At least 2 arguments required"
+    local file="$1"
+    local lines=("${@:2}")
+
+    # Iterate over given lines
+    local line
+    for line in "${lines[@]}"; do
+        # Skip line if already present
+        if [ -f "$file" ] && grep -qxF "$line" "$file"; then
+            continue
+        fi
+
+        # Append line to file
+        echo "$line" >> "$file"
+    done
 }
 
-if [ "$#" -lt 2 ]; then
-    usage
-    exit 1
-fi
+# Append missing lines to file
+#
+# Usage: append [options] <file> <line> [<line> ...]
+#
+# Options:
+#   -d, --debug     Show debug output
+#   -h, --help      Show usage information
+#   -v, --version   Show version information
+#
+# Arguments:
+#   file        File to append to
+#   line ...    Lines to append (unless already present) one by one
+main() {
+    # Parse arguments
+    arguments=()
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -d|--debug) debug ;;
+            -h|--help) usage; return ;;
+            -v|--version) version; return ;;
+            -*) raise error "Unknown option passed: $1" ;;
+            *) arguments+=("$1") ;;
+        esac
+        shift
+    done
 
-file="$1"
-shift
-if [ -d "$file" ]; then
-    echo "ERROR: cannot append lines to a directory"
-    exit 2
-fi
+    # Append lines to file
+    append "${arguments[@]}"
+}
 
-while [[ "$#" -gt 0 ]]; do
-    line="$1"
-    shift
-
-    if [ -f "$file" ] && grep -qxF "$line" "$file"; then
-        continue
-    fi
-
-    echo "$line" >> "$file"
-done
+# Invoke main entrypoint
+main "$@"

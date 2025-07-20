@@ -1,19 +1,34 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
-# Check usage
-if [ "$#" -eq 0 ]; then
-    echo "Usage: $(basename "$0") <url>"
-    exit 1
-fi
+# Import libraries
+import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::from standard import error raise usage
 
-# Read arguments
-url="$1"
+# Require installation of a remote deb package file
+#
+# Usage: require-deb <url>
+#
+# Arguments:
+#   url  URL to download the package file from
+main() {
+    # Read arguments
+    [ "$#" -eq 0 ] || raise usage
+    local url="$1"
 
-# Download deb into temporary directory and install
-dir=$(mktemp -d)
-curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail --output "$dir/package.deb" "$url"
-if ! sudo dpkg --install "$dir/package.deb"; then
-    sudo apt-get install --update --fix-broken --yes
-fi
+    # Download deb into temporary directory
+    local dir
+    dir=$(mktemp -d)
+    local file="$dir/package.deb"
+    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail --output "$file" "$url"
+
+    # Install the package and then use apt-get --fix-broken to install dependencies
+    if ! sudo dpkg --install "$file"; then
+        sudo apt-get install --update --fix-broken --yes --no-install-recommends
+    fi
+}
+
+# Invoke main entrypoint
+main "$@"
