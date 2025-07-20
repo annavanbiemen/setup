@@ -44,7 +44,7 @@ while [[ "$#" -gt 0 ]]; do
         --suite-codename) source_suite=$(. /etc/os-release && echo "${UBUNTU_CODENAME:-${VERSION_CODENAME}}") ;;
         --component) source_component="$2"; shift ;;
         --language) source_lang="$2"; shift ;;
-        --*) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
+        -*) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
         *) packages+=("$1") ;;
     esac
     shift
@@ -59,7 +59,7 @@ if [[ -n "${source_name}" ]]; then
         exit 1
     fi
 
-    require-apt ca-certificates gpg
+    require-apt ca-certificates gpg gpg-agent
 
     # Source paths
     SOURCE_DIR="/etc/apt/sources.list.d"

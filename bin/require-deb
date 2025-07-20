@@ -15,7 +15,7 @@ import::from standard import error raise usage
 #   url  URL to download the package file from
 main() {
     # Read arguments
-    [[ "$#" -eq 0 ]] || raise usage
+    [[ "$#" -eq 1 ]] || raise usage
     local url="$1"
 
     # Download deb into temporary directory
