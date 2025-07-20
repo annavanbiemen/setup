@@ -6,7 +6,7 @@ set -euo pipefail
 # Change directory to the setup home
 cd "$( dirname "$0" )"
 
-# Lint scripts using bash (and POSIC-compatible dash in case of `env`)
+# Lint scripts using bash (and POSIX-compatible dash in case of `env`)
 bin/require-apt dash bash
 dash -n env
 find bin lib/*.sh check.sh demo.sh install.sh env -type f -exec bash -x -n {} +
