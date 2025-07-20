@@ -101,7 +101,7 @@ standard::with() {
 #   function  Function to display usage for
 standard::usage() {
     # Read arguments
-    [[ $# -le 1 ]] || raise usage
+    [[ $# -le 1 ]] || return 1
     local function="${1:-main}"
 
     # Determine file where function was defined

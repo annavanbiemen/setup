@@ -63,8 +63,8 @@ import::from() {
     local operation="$2"
     local functions=("${@:3}")
 
-    [[ "${#functions[@]}" -gt 0 ]] || raise echo "from: No function arguments given"
-    [[ "${operation}" == "import" ]] || raise echo "from: Second argument must be 'import'"
+    [[ "${#functions[@]}" -gt 0 ]] || return 1
+    [[ "${operation}" == "import" ]] || return 1
 
     local function
     import::import "${module}"
