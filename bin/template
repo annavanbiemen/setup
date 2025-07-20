@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Source functions lib
-source "$( dirname "$( dirname "$0" )" )/lib/functions"
+source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/functions"
 
 # Template script
 #
