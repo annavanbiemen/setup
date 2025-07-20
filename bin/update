@@ -1,59 +1,140 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
-bold="\e[1m"
-red="\e[31m"
-reset="\e[0m"
+# Import libraries
+import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::from standard import debug error raise usage version
 
-user=$( whoami )
-file="/etc/sudoers.d/90-update-$user"
-install_sudoers() {
-    tempfile=$( mktemp )
-    {
-        echo "$user ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
-        echo "$user ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
-    } > "$tempfile"
-    visudo -c "$tempfile"
-    echo "Writing $file"
-    sudo install -o root -g root -m 440 "$tempfile" "$file"
+# Initialize variables
+update_dir="$HOME/.updaterc.d"
+update_user="$( whoami )"
+update_sudoers_file="/etc/sudoers.d/90-update-$update_user"
+
+# Add named update command
+#
+# Usage: update::add <name> <command>
+#
+# Arguments:
+#   name     Name can only contain alphanumeric characters, dashes and underscores
+#   command  Command to add
+update::add() {
+    # Read arguments
+    [[ $# -eq 2 ]] || raise usage
+    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || raise usage
+    local name="$1"
+    local command="$2"
+
+    # Create directory
+    if [ ! -d "$update_dir" ]; then
+        mkdir -p "$update_dir"
+    fi
+
+    # Write file
+    local file="$update_dir/$name"
+    echo "$command" > "$file"
 }
 
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --install-sudoers) install_sudoers; exit ;;
-        *) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
-    esac
-done
+# Remove named update command
+update::remove() {
+    # Read arguments
+    [[ $# -eq 1 ]] || raise usage
+    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || raise usage
+    local name="$1"
 
-if [ ! -f "$file" ]; then
-    echo -e "Tired of password prompts? Run ${bold}update --install-sudoers${reset}"
-    echo
-fi
+    # Remove file
+    local file="$update_dir/$name"
+    if [ -f "$file" ]; then
+        rm "$file"
+    fi
+}
 
-# apt
-echo -e "${bold}# apt${reset}"
-/usr/bin/sudo /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes
+# Install sudoers
+update::install_sudoers() {
+    local tempfile
 
-# snap
-if [ -n "$( which snap )" ]; then
-    echo
-    echo -e "${bold}# snap${reset}"
-    /usr/bin/sudo /usr/bin/snap refresh
-fi
+    tempfile="$( mktemp )"
+    {
+        echo "$update_user ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
+        echo "$update_user ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
+    } > "$tempfile"
+    visudo -c "$tempfile"
+    echo "Writing $update_sudoers_file"
+    sudo install -o root -g root -m 440 "$tempfile" "$update_sudoers_file"
+}
 
-# Source files in updaterc.d
-shopt -s nullglob
-for file in ~/.updaterc.d/*; do
-    echo
-    echo -e "${bold}# $(basename "$file")${reset}"
-    # shellcheck source=/dev/null
-    . "$file"
-done
+# Update
+update() {
+    local bold="\e[1m"
+    local red="\e[31m"
+    local reset="\e[0m"
 
-# Warn about reboot
-if [ -f /var/run/reboot-required ]; then
-    echo
-    echo -e "${red}${bold}  !!! SYSTEM REBOOT REQUIRED !!!${reset}" >&2e
-    echo
-fi
+    if [ ! -f "$update_sudoers_file" ]; then
+        echo -e "Tired of password prompts? Run ${bold}update --install-sudoers${reset}"
+        echo
+    fi
+
+    # apt
+    echo -e "${bold}# apt${reset}"
+    /usr/bin/sudo /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes
+
+    # snap
+    if [ -n "$( which snap )" ]; then
+        echo
+        echo -e "${bold}# snap${reset}"
+        /usr/bin/sudo /usr/bin/snap refresh
+    fi
+
+    # Source update commands
+    shopt -s nullglob
+    for file in "$update_dir"/*; do
+        echo
+        echo -e "${bold}# $(basename "$file")${reset}"
+        # shellcheck source=/dev/null
+        source "$file"
+    done
+
+    # Warn about reboot
+    if [ -f /var/run/reboot-required ]; then
+        echo -e "${red}"
+        cat /var/run/reboot-required
+        echo -e "${reset}"
+    fi
+}
+
+# Update script
+#
+# Usage: update [options]
+#
+# Options:
+#   -a. --add <name> <command>  Add named update command
+#   -d, --debug                 Show debug output
+#   -h, --help                  Show usage information
+#   -r, --remove <name>         Remove named update command"
+#   -i, --install-sudoers       Install sudoers file to prevent password prompts"
+#   -v, --version               Show version information
+#
+# Arguments:
+#   name     Name can only contain alphanumeric characters, dashes and underscores
+#   command  Command to add
+main() {
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -a|--add) update::add "$2" "$3"; return ;;
+            -d|--debug) debug ;;
+            -h|--help) usage; return ;;
+            -i|--install-sudoers) update::install_sudoers; return ;;
+            -r|--remove) update::remove "$2"; return ;;
+            -v|--version) version; return ;;
+            -*) raise error "Unknown option passed: $1" ;;
+            *) raise error "Unknown argument passed: $1" ;;
+        esac
+        shift
+    done
+
+    update
+}
+
+# Invoke main entrypoint
+main "$@"

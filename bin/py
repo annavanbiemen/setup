@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
 # Setup Python + UV

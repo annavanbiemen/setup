@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
 usage() {
@@ -58,7 +59,7 @@ if [ -n "${source_name}" ]; then
         exit 1
     fi
 
-    require-apt gpg
+    require-apt ca-certificates gpg
 
     # Source paths
     SOURCE_DIR="/etc/apt/sources.list.d"
@@ -100,7 +101,7 @@ done
 # Install missing packages
 if [ ${#missing[@]} -gt 0 ]; then
     export DEBIAN_FRONTEND=noninteractive
-    command="sudo apt-get install --update --yes"
+    command="sudo apt-get install --update --yes --no-install-recommends"
     echo -e "\e[1m$command" "${missing[@]}" "\e[0m"
     $command "${missing[@]}"
 fi

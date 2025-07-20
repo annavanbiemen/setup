@@ -1,29 +1,21 @@
 #!/bin/bash
 
+# Exit on errors
 set -euo pipefail
 
-default="code"
-python="pycharm $default"
-php="phpstorm $default"
-rust="rustrover $default"
-
+# Launch IDE in project directory
 launch() {
-	dir="$2"
-	if [ "$dir" = "$PWD" ]; then
+	local ide="$1"
+	local dir="$2"
+	if [[ "$dir" == "$PWD" ]]; then
 		dir="."
 	fi
 
-	ides="$1"
-	for ide in $ides code; do
-		if [ -n "$( which "$ide" )" ]; then
-			echo "Launching $ide ${dir/"$HOME"/"~"}"
-			nohup "$ide" "$dir" &>/dev/null &
-			exit 0
-		fi
-	done
+	command -v "$ide" &> /dev/null || raise error "IDE not found: $ide"
 
-	echo "None of the following IDE's were found: $ides"
-	exit 3
+	echo "Launching $ide ${dir/"$HOME"/"~"}"
+	nohup "$ide" "$dir" &>/dev/null &
+	exit 0
 }
 
 # Read the starting directory
@@ -33,19 +25,19 @@ if [ ! -d "${dir}" ]; then
 	exit 1
 fi
 
-# Scan directories untill we encounter $HOME or /
+# Scan directories until we encounter $HOME or /
 while [ "$dir" != "/" ]; do
 	if [ "$dir" = "$HOME" ]; then
 		break
 	fi
 	if [ -f "$dir/composer.json" ]; then
-		launch "$php" "$dir"
+		launch phpstorm "$dir"
 	elif [ -f "$dir/pyproject.toml" ]; then
-		launch "$python" "$dir"
+		launch pycharm "$dir"
 	elif [ -f "$dir/Cargo.toml" ]; then
-		launch "$rust" "$dir"
+		launch rustrover "$dir"
 	elif [ -f "$dir/README.md" ] || [ -f "$dir/LICENSE" ]; then
-		launch "$default" "$dir"
+		launch code "$dir"
 	fi
 	dir=$( dirname "$dir" )
 done
