@@ -45,10 +45,10 @@ import::import() {
 
     # Import only once
     # shellcheck source=/dev/null
-    import::loaded "$module" || source "${__import_path}/${module}.sh"
+    import::loaded "${module}" || source "${__import_path}/${module}.sh"
 
     # Add module to the __import_loaded array
-    __import_imported+=("$module")
+    __import_imported+=("${module}")
 }
 
 # Import functions as aliases from module
@@ -64,10 +64,10 @@ import::from() {
     local functions=("${@:3}")
 
     [[ "${#functions[@]}" -gt 0 ]] || raise echo "from: No function arguments given"
-    [[ "$operation" == "import" ]] || raise echo "from: Second argument must be 'import'"
+    [[ "${operation}" == "import" ]] || raise echo "from: Second argument must be 'import'"
 
     local function
-    import::import "$module"
+    import::import "${module}"
     for function in "${functions[@]}"; do
         eval "function ${function} { ${module}::${function} \"\$@\"; }"
     done

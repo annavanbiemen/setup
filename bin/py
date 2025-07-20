@@ -4,8 +4,8 @@
 set -euo pipefail
 
 # Setup Python + UV
-if [ -z "$(which uvx )" ]; then
-    if [ ! -f "$HOME/.local/bin/uvx" ]; then
+if ! command -v uvx &> /dev/null; then
+    if [[ ! -f "${HOME}/.local/bin/uvx" ]]; then
         setup uv
     fi
 fi

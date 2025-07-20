@@ -55,8 +55,8 @@ gimp:
 # https://git-scm.com/
 git:
     require-apt git git-absorb
-    [ -n "$EMAIL" ] && git config --global user.email "$EMAIL"
-    [ -n "$NAME" ] && git config --global user.name "$NAME"
+    [[ -n "${EMAIL}" ]] && git config --global user.email "${EMAIL}"
+    [[ -n "${NAME}" ]] && git config --global user.name "${NAME}"
     git config --global core.autocrlf input
     git config --global init.defaultBranch main
     git config --global rebase.autosquash true
@@ -78,17 +78,17 @@ node: volta
 volta:
     require-sh bash -s -- --skip-setup https://get.volta.sh
     require-volta node
-    update --add volta "$HOME/.volta/bin/volta-migrate"
+    update --add volta "${HOME}/.volta/bin/volta-migrate"
     append ~/.env 'VOLTA_HOME="$HOME/.volta"'
     append ~/.path ".volta/bin"
     append ~/.bashrc 'eval "$(volta completions bash)"'
-    "$HOME/.volta/bin/volta" --version
+    "${HOME}/.volta/bin/volta" --version
 
 # https://rustup.rs/
 rust:
     require-sh "https://sh.rustup.rs"
-    update --add rustup "$HOME/.cargo/bin/rustup update"
-    "$HOME/.cargo/bin/rustc" --version
+    update --add rustup "${HOME}/.cargo/bin/rustup update"
+    "${HOME}/.cargo/bin/rustc" --version
 
 # https://deb.sury.org/
 php:
@@ -102,8 +102,8 @@ php:
 # https://getcomposer.org/download/
 composer: git php
     require-apt unzip
-    require-sh php -- --install-dir="$HOME/.local/bin" --filename=composer "https://getcomposer.org/installer"
-    update --add composer "$HOME/.local/bin/composer self-update"
+    require-sh php -- --install-dir="${HOME}/.local/bin" --filename=composer "https://getcomposer.org/installer"
+    update --add composer "${HOME}/.local/bin/composer self-update"
     append ~/.bashrc 'eval "$(composer completion bash)"'
     append ~/.path ".config/composer/vendor/bin"
     composer --version
@@ -111,7 +111,7 @@ composer: git php
 # https://symfony.com/download
 symfony: composer git php
     require-apt curl tar
-    require-sh bash -s -- --install-dir="$HOME/.local/bin" "https://get.symfony.com/cli/installer"
+    require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
     append ~/.bashrc 'eval "$(symfony completion bash)"'
     symfony -V
 
@@ -123,7 +123,7 @@ tilix:
 # https://docs.astral.sh/uv/
 uv:
     require-sh https://astral.sh/uv/install.sh
-    update --add uv "$HOME/.local/bin/uv self update"
+    update --add uv "${HOME}/.local/bin/uv self update"
     append ~/.bashrc 'eval "$(uv generate-shell-completion bash)"'
     append ~/.bashrc 'eval "$(uvx --generate-shell-completion bash)"'
     uv --version

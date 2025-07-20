@@ -1,10 +1,10 @@
-#!/bin/bash
+# shellcheck shell=sh
 
 # Load ~/.env
 if [ -f ~/.env ]; then
     set -a
     # shellcheck source=/dev/null
-    source ~/.env
+    . ~/.env
     set +a
 fi
 
@@ -13,31 +13,31 @@ if [ -f ~/.path ]; then
     _paths=""
     while IFS= read -r _path; do
         # Skip any empty lines in the file.
-        if [ -z "$_path" ]; then
+        if [ -z "${_path}" ]; then
             continue
         fi
 
         # Make sure we have an absolute path
-        [ "$_path" != "${_path#/}" ] || _path="$HOME/$_path"
+        [ "${_path}" != "${_path#/}" ] || _path="${HOME}/${_path}"
 
         # Check if the path points to an actual directory.
-        if [ ! -d "$_path" ]; then
-            echo "Skipping: '$_path' is not a valid directory."
+        if [ ! -d "${_path}" ]; then
+            echo "Skipping: '${_path}' is not a valid directory."
             continue
         fi
 
         # Check if path is already included
         case ":${PATH}:" in
-            *:"$_path":*)
+            *:"${_path}":*)
                 ;;
             *)
-                _paths="$_paths$_path:"
+                _paths="${_paths}${_path}:"
                 ;;
         esac
     done < ~/.path
 
     # Insert paths
-    export PATH="$_paths$PATH"
+    export PATH="${_paths}${PATH}"
 
     # Cleanup
     unset _path _paths
@@ -46,5 +46,5 @@ fi
 # Include VIRTUAL_ENV_PROMPT in the prompt
 if [ "${VIRTUAL_ENV_DISABLE_PROMPT:-}" != "1" ] && [ -n "${PS1+x}" ]; then
     export VIRTUAL_ENV_DISABLE_PROMPT=1
-    PS1='${VIRTUAL_ENV_PROMPT:+($VIRTUAL_ENV_PROMPT) }'$PS1
+    PS1='${VIRTUAL_ENV_PROMPT:+($VIRTUAL_ENV_PROMPT) }'${PS1}
 fi

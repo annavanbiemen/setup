@@ -24,12 +24,12 @@ append() {
     local line
     for line in "${lines[@]}"; do
         # Skip line if already present
-        if [ -f "$file" ] && grep -qxF "$line" "$file"; then
+        if [[ -f "${file}" ]] && grep -qxF "${line}" "${file}"; then
             continue
         fi
 
         # Append line to file
-        echo "$line" >> "$file"
+        echo "${line}" >> "${file}"
     done
 }
 

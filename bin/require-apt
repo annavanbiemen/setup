@@ -20,7 +20,7 @@ usage() {
     echo "When --source is specified, you must also specify --uri, --key, and --component"
 }
 
-if [ "$#" -eq 0 ]; then
+if [[ "$#" -eq 0 ]]; then
     usage
     exit 1
 fi
@@ -41,7 +41,7 @@ while [[ "$#" -gt 0 ]]; do
         --key) source_key="$2"; shift ;;
         --arch) source_arch="$2"; shift ;;
         --suite) source_suite="$2"; shift ;;
-        --suite-codename) source_suite=$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") ;;
+        --suite-codename) source_suite=$(. /etc/os-release && echo "${UBUNTU_CODENAME:-${VERSION_CODENAME}}") ;;
         --component) source_component="$2"; shift ;;
         --language) source_lang="$2"; shift ;;
         --*) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
@@ -50,10 +50,10 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-if [ -n "${source_name}" ]; then
+if [[ -n "${source_name}" ]]; then
 
     # Validate required arguments
-    if [ -z "$source_uri" ] || [ -z "$source_key" ] || [ -z "$source_component" ]; then
+    if [[ -z "${source_uri}" ]] || [[ -z "${source_key}" ]] || [[ -z "${source_component}" ]]; then
         echo "Error: Missing required arguments."
         usage
         exit 1
@@ -63,45 +63,45 @@ if [ -n "${source_name}" ]; then
 
     # Source paths
     SOURCE_DIR="/etc/apt/sources.list.d"
-    SOURCE_FILE="$SOURCE_DIR/${source_name}.sources"
+    SOURCE_FILE="${SOURCE_DIR}/${source_name}.sources"
 
     # --- Download the GPG key into a variable ---
-    echo "Downloading GPG key from $source_key..."
+    echo "Downloading GPG key from ${source_key}..."
     GPG_HOME=$(mktemp -d)
-    GPG_KEY_ORIGINAL="$GPG_HOME/key.gpg"
-    GPG_KEY_ARMORED="$GPG_HOME/key.asc"
-    curl -fsSL "$source_key" > "$GPG_KEY_ORIGINAL"
-    gpg --homedir "$GPG_HOME" --import "$GPG_KEY_ORIGINAL"
-    gpg --homedir "$GPG_HOME" --export --armor > "$GPG_KEY_ARMORED"
+    GPG_KEY_ORIGINAL="${GPG_HOME}/key.gpg"
+    GPG_KEY_ARMORED="${GPG_HOME}/key.asc"
+    curl -fsSL "${source_key}" > "${GPG_KEY_ORIGINAL}"
+    gpg --homedir "${GPG_HOME}" --import "${GPG_KEY_ORIGINAL}"
+    gpg --homedir "${GPG_HOME}" --export --armor > "${GPG_KEY_ARMORED}"
 
     # Create the sources file in DEB822 format with the embedded key
-    echo -e "\e[1mWriting $SOURCE_FILE\e[0m"
+    echo -e "\e[1mWriting ${SOURCE_FILE}\e[0m"
     {
         echo "Types: deb"
-        echo "URIs: $source_uri"
-        echo "Suites: $source_suite"
-        echo "Components: $source_component"
-        echo "Architectures: $source_arch"
-        if [ -n "$source_lang" ]; then
-            echo "Languages: $source_lang"
+        echo "URIs: ${source_uri}"
+        echo "Suites: ${source_suite}"
+        echo "Components: ${source_component}"
+        echo "Architectures: ${source_arch}"
+        if [[ -n "${source_lang}" ]]; then
+            echo "Languages: ${source_lang}"
         fi
         echo "Signed-By: |"
-        sed 's/^/ /' "$GPG_KEY_ARMORED"
-    } | sudo tee "$SOURCE_FILE"
+        sed 's/^/ /' "${GPG_KEY_ARMORED}"
+    } | sudo tee "${SOURCE_FILE}"
 fi
 
 # Collect missing packages
 missing=()
 for package in "${packages[@]}"; do
-    if ! dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q "install ok installed"; then
-        missing+=("$package")
+    if ! dpkg-query -W -f='${Status}' "${package}" 2>/dev/null | grep -q "install ok installed"; then
+        missing+=("${package}")
     fi
 done
 
 # Install missing packages
-if [ ${#missing[@]} -gt 0 ]; then
+if [[ ${#missing[@]} -gt 0 ]]; then
     export DEBIAN_FRONTEND=noninteractive
     command="sudo apt-get install --update --yes --no-install-recommends"
-    echo -e "\e[1m$command" "${missing[@]}" "\e[0m"
-    $command "${missing[@]}"
+    echo -e "\e[1m${command}" "${missing[@]}" "\e[0m"
+    ${command} "${missing[@]}"
 fi
