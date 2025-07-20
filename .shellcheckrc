@@ -1,0 +1,2 @@
+# Allow 'source' outside of FILES
+external-sources=true
