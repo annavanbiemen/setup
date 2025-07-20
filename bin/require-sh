@@ -16,19 +16,18 @@ import::from standard import error raise usage
 #   url     URL to fetch the script from
 main() {
     # Read arguments
-    [[ $# -eq 0 ]] || raise usage
+    [[ $# -gt 0 ]] || raise usage
     local url="${!#}"
     local shell=("sh")
     if [[ $# -gt 1 ]]; then
-        shell=("${@::$#-1}")
+        shell=("${@:1:$#-1}")
     fi
 
     # Require packages
     require-apt ca-certificates curl
 
     # Download script and pipe to the given shell
-    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "${url}" \
-        | "${shell[@]}"
+    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "${url}"  | "${shell[@]}"
 }
 
 # Invoke main entrypoint

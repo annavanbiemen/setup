@@ -7,7 +7,7 @@ set -euo pipefail
 #
 # Usage: require-volta <package> [ <package> ...]
 main() {
-    [[ "$#" -eq 0 ]] || raise usage
+    [[ "$#" -gt 0 ]] || raise usage
 
     # Satisfy Volta environment requirements
     export VOLTA_HOME="${HOME}/.volta"
