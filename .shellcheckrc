@@ -1,2 +1,8 @@
 # Allow 'source' outside of FILES
 external-sources=true
+enable=add-default-case
+enable=avoid-nullary-conditions
+enable=deprecate-which
+enable=quote-safe-variables
+enable=require-double-brackets
+enable=require-variable-braces

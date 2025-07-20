@@ -21,7 +21,7 @@
 standard::error() {
     local text="$1"
 
-    printf "ERROR: %s" "$text" >&2
+    printf "ERROR: %s" "${text}" >&2
 }
 
 # Raise non-zero exit code and output from optional command to STDERR
@@ -50,14 +50,14 @@ standard::trace() {
         arg_count=${BASH_ARGC[frame]}
         arg_pos=$((arg_pos + arg_count))
 
-        file="${BASH_SOURCE[$frame]}"
+        file="${BASH_SOURCE[${frame}]}"
         line="${BASH_LINENO[$((frame - 1))]}"
         call="${FUNCNAME[frame]}"
         for ((arg = 1; arg <= arg_count; arg++)); do
             call+=$(printf " %q" "${BASH_ARGV[arg_pos - arg]}")
         done
 
-        printf "%2d %-30s  # %s:%s\n" "$frame" "$call" "$file" "$line"
+        printf "%2d %-30s  # %s:%s\n" "${frame}" "${call}" "${file}" "${line}"
     done
 }
 
@@ -80,17 +80,17 @@ standard::with() {
     local option="$1"
     shift
 
-    if shopt -p "$option"  > /dev/null; then
+    if shopt -p "${option}"  > /dev/null; then
         "$@"
         return $?
     fi
 
     local exit=0
-    shopt -s "$option" > /dev/null
+    shopt -s "${option}" > /dev/null
     "$@" || exit=$?
-    shopt -u "$option" > /dev/null
+    shopt -u "${option}" > /dev/null
 
-    return $exit
+    return "${exit}"
 }
 
 # Show usage information for a function
@@ -106,11 +106,11 @@ standard::usage() {
 
     # Determine file where function was defined
     local info file
-    IFS=" " read -r -a info <<< "$( standard::with extdebug declare -F "$function" )"
+    IFS=" " read -r -a info <<< "$( standard::with extdebug declare -F "${function}" )"
     file="${info[2]}"
 
     # Use awk to parse the usage information
-    awk -v func="$function" '
+    awk -v func="${function}" '
     $0 ~ "^(function[[:space:]]+)?" func "[[:space:]]*\\([[:space:]]*\\)" {
         if (comment_block) {
             # Print the stored comments, removing the final newline
@@ -127,7 +127,7 @@ standard::usage() {
     /./ {
         comment_block = ""
     }
-    ' "$file"
+    ' "${file}"
 }
 
 # Show version information

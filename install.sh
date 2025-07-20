@@ -18,7 +18,7 @@ echo -e "    🔸 ${bold}py${reset} to start a Python repl with rich colors."
 echo
 
 # Read name and email from .env
-if [ -f ~/.env ]; then
+if [[ -f ~/.env ]]; then
     # shellcheck source=/dev/null
     source ~/.env
 fi
@@ -36,7 +36,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Read name and email from input
-if [ -z "$name" ] || [ -z "$email" ]; then
+if [[ -z "${name}" ]] || [[ -z "${email}" ]]; then
     echo "  Lets start with a little introduction first."
     echo
     echo "  Please enter your"
@@ -48,22 +48,22 @@ fi
 
 # Determine paths and source line
 setup_path="$( dirname "$( realpath "$0")" )"
-setup_path_relative="${setup_path/"$HOME/"/}"
-setup_source_line=". \"${setup_path/"$HOME"/"\$HOME"}/env\""
+setup_path_relative="${setup_path/"${HOME}/"/}"
+setup_source_line=". \"${setup_path/"${HOME}"/"\$HOME"}/env\""
 
 # Add bin directory to PATH
-PATH="$setup_path/bin:$PATH"
+PATH="${setup_path}/bin:${PATH}"
 
 cd ~
-append .profile "$setup_source_line"
-append .bashrc "$setup_source_line"
-append .path "$setup_path_relative/bin"
+append .profile "${setup_source_line}"
+append .bashrc "${setup_source_line}"
+append .path "${setup_path_relative}/bin"
 append .path ".local/bin" && mkdir -p .local/bin
-append .env "NAME=\"$name\""
-append .env "EMAIL=\"$email\""
+append .env "NAME=\"${name}\""
+append .env "EMAIL=\"${email}\""
 
 echo
 echo "  Setup done! 🎉"
 echo
-echo "  $setup_source_line # or start a new shell to activate"
+echo "  ${setup_source_line} # or start a new shell to activate"
 echo

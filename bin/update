@@ -8,9 +8,9 @@ import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" 
 import::from standard import debug error raise usage version
 
 # Initialize variables
-update_dir="$HOME/.updaterc.d"
+update_dir="${HOME}/.updaterc.d"
 update_user="$( whoami )"
-update_sudoers_file="/etc/sudoers.d/90-update-$update_user"
+update_sudoers_file="/etc/sudoers.d/90-update-${update_user}"
 
 # Add named update command
 #
@@ -27,13 +27,13 @@ update::add() {
     local command="$2"
 
     # Create directory
-    if [ ! -d "$update_dir" ]; then
-        mkdir -p "$update_dir"
+    if [[ ! -d "${update_dir}" ]]; then
+        mkdir -p "${update_dir}"
     fi
 
     # Write file
-    local file="$update_dir/$name"
-    echo "$command" > "$file"
+    local file="${update_dir}/${name}"
+    echo "${command}" > "${file}"
 }
 
 # Remove named update command
@@ -44,9 +44,9 @@ update::remove() {
     local name="$1"
 
     # Remove file
-    local file="$update_dir/$name"
-    if [ -f "$file" ]; then
-        rm "$file"
+    local file="${update_dir}/${name}"
+    if [[ -f "${file}" ]]; then
+        rm "${file}"
     fi
 }
 
@@ -56,12 +56,12 @@ update::install_sudoers() {
 
     tempfile="$( mktemp )"
     {
-        echo "$update_user ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
-        echo "$update_user ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
-    } > "$tempfile"
-    visudo -c "$tempfile"
-    echo "Writing $update_sudoers_file"
-    sudo install -o root -g root -m 440 "$tempfile" "$update_sudoers_file"
+        echo "${update_user} ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
+        echo "${update_user} ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
+    } > "${tempfile}"
+    visudo -c "${tempfile}"
+    echo "Writing ${update_sudoers_file}"
+    sudo install -o root -g root -m 440 "${tempfile}" "${update_sudoers_file}"
 }
 
 # Update
@@ -70,7 +70,7 @@ update() {
     local red="\e[31m"
     local reset="\e[0m"
 
-    if [ ! -f "$update_sudoers_file" ]; then
+    if [[ ! -f "${update_sudoers_file}" ]]; then
         echo -e "Tired of password prompts? Run ${bold}update --install-sudoers${reset}"
         echo
     fi
@@ -80,7 +80,7 @@ update() {
     /usr/bin/sudo /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes
 
     # snap
-    if [ -n "$( which snap )" ]; then
+    if command -v snap &> /dev/null; then
         echo
         echo -e "${bold}# snap${reset}"
         /usr/bin/sudo /usr/bin/snap refresh
@@ -88,15 +88,15 @@ update() {
 
     # Source update commands
     shopt -s nullglob
-    for file in "$update_dir"/*; do
+    for file in "${update_dir}"/*; do
         echo
-        echo -e "${bold}# $(basename "$file")${reset}"
+        echo -e "${bold}# $(basename "${file}")${reset}"
         # shellcheck source=/dev/null
-        source "$file"
+        source "${file}"
     done
 
     # Warn about reboot
-    if [ -f /var/run/reboot-required ]; then
+    if [[ -f /var/run/reboot-required ]]; then
         echo -e "${red}"
         cat /var/run/reboot-required
         echo -e "${reset}"

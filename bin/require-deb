@@ -15,17 +15,17 @@ import::from standard import error raise usage
 #   url  URL to download the package file from
 main() {
     # Read arguments
-    [ "$#" -eq 0 ] || raise usage
+    [[ "$#" -eq 0 ]] || raise usage
     local url="$1"
 
     # Download deb into temporary directory
     local dir
     dir=$(mktemp -d)
-    local file="$dir/package.deb"
-    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail --output "$file" "$url"
+    local file="${dir}/package.deb"
+    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail --output "${file}" "${url}"
 
     # Install the package and then use apt-get --fix-broken to install dependencies
-    if ! sudo dpkg --install "$file"; then
+    if ! sudo dpkg --install "${file}"; then
         sudo apt-get install --update --fix-broken --yes --no-install-recommends
     fi
 }

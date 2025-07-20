@@ -10,8 +10,8 @@ main() {
     [[ "$#" -eq 0 ]] || raise usage
 
     # Satisfy Volta environment requirements
-    export VOLTA_HOME="$HOME/.volta"
-    export PATH="$VOLTA_HOME/bin:$PATH"
+    export VOLTA_HOME="${HOME}/.volta"
+    export PATH="${VOLTA_HOME}/bin:${PATH}"
 
     # Install missing packages
     volta install "$@"
