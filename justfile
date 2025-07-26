@@ -90,6 +90,8 @@ volta:
 rust:
     require-sh sh -s -- -y "https://sh.rustup.rs"
     update --add rustup "${HOME}/.cargo/bin/rustup update"
+    append ~/.bashrc 'eval "$(rustup completions bash cargo)"'
+    append ~/.bashrc 'eval "$(rustup completions bash rustup)"'
     "${HOME}/.cargo/bin/rustc" --version
 
 # https://deb.sury.org/
