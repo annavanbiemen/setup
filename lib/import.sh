@@ -7,11 +7,9 @@
 #   import::import <module>
 #   import::from <module> import <function> [<function> ...]
 
-
 # Initialize variables
-__import_path="$( dirname "${BASH_SOURCE[0]}" )"
-__import_loaded=( "${__import_loaded[@]}" )
-
+__import_path="$(dirname "${BASH_SOURCE[0]}")"
+__import_loaded=("${__import_loaded[@]}")
 
 # Check if a module is loaded.
 #

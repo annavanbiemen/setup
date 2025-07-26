@@ -29,9 +29,19 @@ email="${EMAIL:-}"
 # Read name and email from arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --name) name="$2"; shift ;;
-        --email) email="$2"; shift ;;
-        *) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
+    --name)
+        name="$2"
+        shift
+        ;;
+    --email)
+        email="$2"
+        shift
+        ;;
+    *)
+        echo "Unknown parameter passed: $1"
+        usage
+        exit 1
+        ;;
     esac
     shift
 done
@@ -48,7 +58,7 @@ if [[ -z "${name}" ]] || [[ -z "${email}" ]]; then
 fi
 
 # Determine paths and source line
-setup_path="$( dirname "$( realpath "$0")" )"
+setup_path="$(dirname "$(realpath "$0")")"
 setup_path_relative="${setup_path/"${HOME}/"/}"
 setup_source_line=". \"${setup_path/"${HOME}"/"\$HOME"}/env\""
 

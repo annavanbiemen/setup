@@ -28,11 +28,10 @@ if [ -f ~/.path ]; then
 
         # Check if path is already included
         case ":${PATH}:" in
-            *:"${_path}":*)
-                ;;
-            *)
-                _paths="${_paths}${_path}:"
-                ;;
+        *:"${_path}":*) ;;
+        *)
+            _paths="${_paths}${_path}:"
+            ;;
         esac
     done < ~/.path
 

@@ -4,12 +4,12 @@
 set -euo pipefail
 
 # Import libraries
-import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::loaded &> /dev/null || source "$(dirname "$(dirname "$(realpath "$0")")")/lib/import.sh"
 import::from standard import debug error raise usage version
 
 # Initialize variables
 update_dir="${HOME}/.updaterc.d"
-update_user="$( whoami )"
+update_user="$(whoami)"
 update_sudoers_file="/etc/sudoers.d/90-update-${update_user}"
 
 # Add named update command
@@ -54,7 +54,7 @@ update::remove() {
 update::install_sudoers() {
     local tempfile
 
-    tempfile="$( mktemp )"
+    tempfile="$(mktemp)"
     {
         echo "${update_user} ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
         echo "${update_user} ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
@@ -121,14 +121,29 @@ update() {
 main() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
-            -a|--add) update::add "$2" "$3"; return ;;
-            -d|--debug) debug ;;
-            -h|--help) usage; return ;;
-            -i|--install-sudoers) update::install_sudoers; return ;;
-            -r|--remove) update::remove "$2"; return ;;
-            -v|--version) version; return ;;
-            -*) raise error "Unknown option passed: $1" ;;
-            *) raise error "Unknown argument passed: $1" ;;
+        -a | --add)
+            update::add "$2" "$3"
+            return
+            ;;
+        -d | --debug) debug ;;
+        -h | --help)
+            usage
+            return
+            ;;
+        -i | --install-sudoers)
+            update::install_sudoers
+            return
+            ;;
+        -r | --remove)
+            update::remove "$2"
+            return
+            ;;
+        -v | --version)
+            version
+            return
+            ;;
+        -*) raise error "Unknown option passed: $1" ;;
+        *) raise error "Unknown argument passed: $1" ;;
         esac
         shift
     done

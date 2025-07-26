@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Change directory to the setup home
-cd "$( dirname "$( dirname "$0" )" )"
+cd "$(dirname "$(dirname "$0")")"
 
 # Source the env script
 source ./env

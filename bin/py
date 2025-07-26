@@ -11,7 +11,7 @@ if ! command -v uvx &> /dev/null; then
 fi
 
 # Python startup script
-PYTHONSTARTUP="$( dirname "$( dirname "$0" )" )/etc/pythonrc"
+PYTHONSTARTUP="$(dirname "$(dirname "$0")")/etc/pythonrc"
 export PYTHONSTARTUP
 
 # Download and invoke Python 3.14 using uvx

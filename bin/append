@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Import libraries
-import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::loaded &> /dev/null || source "$(dirname "$(dirname "$(realpath "$0")")")/lib/import.sh"
 import::from standard import debug error raise usage version
 
 # Append missing lines to file
@@ -50,11 +50,17 @@ main() {
     arguments=()
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
-            -d|--debug) debug ;;
-            -h|--help) usage; return ;;
-            -v|--version) version; return ;;
-            -*) raise error "Unknown option passed: $1" ;;
-            *) arguments+=("$1") ;;
+        -d | --debug) debug ;;
+        -h | --help)
+            usage
+            return
+            ;;
+        -v | --version)
+            version
+            return
+            ;;
+        -*) raise error "Unknown option passed: $1" ;;
+        *) arguments+=("$1") ;;
         esac
         shift
     done
