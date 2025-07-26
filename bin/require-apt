@@ -36,16 +36,43 @@ source_component="main"
 source_lang=""
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --source) source_name="$2"; shift ;;
-        --uri) source_uri="$2"; shift ;;
-        --key) source_key="$2"; shift ;;
-        --arch) source_arch="$2"; shift ;;
-        --suite) source_suite="$2"; shift ;;
-        --suite-codename) source_suite=$(. /etc/os-release && echo "${UBUNTU_CODENAME:-${VERSION_CODENAME}}") ;;
-        --component) source_component="$2"; shift ;;
-        --language) source_lang="$2"; shift ;;
-        -*) echo "Unknown parameter passed: $1"; usage; exit 1 ;;
-        *) packages+=("$1") ;;
+    --source)
+        source_name="$2"
+        shift
+        ;;
+    --uri)
+        source_uri="$2"
+        shift
+        ;;
+    --key)
+        source_key="$2"
+        shift
+        ;;
+    --arch)
+        source_arch="$2"
+        shift
+        ;;
+    --suite)
+        source_suite="$2"
+        shift
+        ;;
+    --suite-codename)
+        source_suite=$(. /etc/os-release && echo "${UBUNTU_CODENAME:-${VERSION_CODENAME}}")
+        ;;
+    --component)
+        source_component="$2"
+        shift
+        ;;
+    --language)
+        source_lang="$2"
+        shift
+        ;;
+    -*)
+        echo "Unknown parameter passed: $1"
+        usage
+        exit 1
+        ;;
+    *) packages+=("$1") ;;
     esac
     shift
 done
@@ -93,7 +120,7 @@ fi
 # Collect missing packages
 missing=()
 for package in "${packages[@]}"; do
-    if ! dpkg-query -W -f='${Status}' "${package}" 2>/dev/null | grep -q "install ok installed"; then
+    if ! dpkg-query -W -f='${Status}' "${package}" 2> /dev/null | grep -q "install ok installed"; then
         missing+=("${package}")
     fi
 done

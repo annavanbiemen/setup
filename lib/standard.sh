@@ -11,7 +11,6 @@
 #   standard::usage <function>
 #   standard::version
 
-
 # Output an error
 #
 # Usage: standard::error [message]
@@ -80,7 +79,7 @@ standard::with() {
     local option="$1"
     shift
 
-    if shopt -p "${option}"  > /dev/null; then
+    if shopt -p "${option}" > /dev/null; then
         "$@"
         return $?
     fi
@@ -106,7 +105,7 @@ standard::usage() {
 
     # Determine file where function was defined
     local info file
-    IFS=" " read -r -a info <<< "$( standard::with extdebug declare -F "${function}" )"
+    IFS=" " read -r -a info <<< "$(standard::with extdebug declare -F "${function}")"
     file="${info[2]}"
 
     # Use awk to parse the usage information
@@ -134,5 +133,5 @@ standard::usage() {
 #
 # Usage: standard::version
 standard::version() {
-    git -C "$( dirname "$0" )" describe --always --dirty
+    git -C "$(dirname "$0")" describe --always --dirty
 }

@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Import libraries
-import::loaded &> /dev/null || source "$( dirname "$( dirname "$( realpath "$0" )" )" )/lib/import.sh"
+import::loaded &> /dev/null || source "$(dirname "$(dirname "$(realpath "$0")")")/lib/import.sh"
 import::from standard import error raise usage
 
 # Require execution of a remote shell script
@@ -27,7 +27,7 @@ main() {
     require-apt ca-certificates curl
 
     # Download script and pipe to the given shell
-    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "${url}"  | "${shell[@]}"
+    curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail "${url}" | "${shell[@]}"
 }
 
 # Invoke main entrypoint
