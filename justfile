@@ -69,6 +69,7 @@ github: git
         --source github-cli \
         --uri "https://cli.github.com/packages" \
         --key "https://cli.github.com/packages/githubcli-archive-keyring.gpg"
+    append ~/.bashrc 'eval "$(gh completion -s bash)"'
     gh --version | head -n1
 
 # https://nodejs.org/en
