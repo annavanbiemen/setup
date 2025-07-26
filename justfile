@@ -24,7 +24,7 @@ chrome:
 # https://www.anthropic.com/claude-code
 claude: volta
     require-volta @anthropic-ai/claude-code
-    claude --version
+    "${HOME}/.volta/bin/claude" --version | head -n1
 
 # https://direnv.net/
 direnv:
@@ -45,7 +45,7 @@ docker:
 # https://github.com/google-gemini/gemini-cli
 gemini: volta
     require-volta @google/gemini-cli
-    gemini --version
+    "${HOME}/.volta/bin/gemini" --version
 
 # https://www.gimp.org/
 gimp:
@@ -54,6 +54,7 @@ gimp:
 
 # https://git-scm.com/
 git:
+    #!/bin/bash
     require-apt git git-absorb
     [[ -n "${EMAIL}" ]] && git config --global user.email "${EMAIL}"
     [[ -n "${NAME}" ]] && git config --global user.name "${NAME}"
@@ -68,11 +69,11 @@ github: git
         --source github-cli \
         --uri "https://cli.github.com/packages" \
         --key "https://cli.github.com/packages/githubcli-archive-keyring.gpg"
-    gh --version
+    gh --version | head -n1
 
 # https://nodejs.org/en
 node: volta
-    node --version
+    "${HOME}/.volta/bin/node" --version
 
 # https://volta.sh/
 volta:
@@ -86,7 +87,7 @@ volta:
 
 # https://rustup.rs/
 rust:
-    require-sh "https://sh.rustup.rs"
+    require-sh sh -s -- -y "https://sh.rustup.rs"
     update --add rustup "${HOME}/.cargo/bin/rustup update"
     "${HOME}/.cargo/bin/rustc" --version
 
@@ -97,7 +98,7 @@ php:
         --uri "https://ppa.launchpadcontent.net/ondrej/php/ubuntu" \
         --key "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB8DC7E53946656EFBCE4C1DD71DAEAAB4AD4CAB6" \
         --suite-codename
-    php --version
+    php --version | head -n1
 
 # https://getcomposer.org/download/
 composer: git php
@@ -106,19 +107,19 @@ composer: git php
     update --add composer "${HOME}/.local/bin/composer self-update"
     append ~/.bashrc 'eval "$(composer completion bash)"'
     append ~/.path ".config/composer/vendor/bin"
-    composer --version
+    composer --no-ansi --version | head -n1
 
 # https://symfony.com/download
-symfony: composer git php
+symfony: composer git
     require-apt curl tar
     require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
     append ~/.bashrc 'eval "$(symfony completion bash)"'
-    symfony -V
+    symfony --no-ansi version
 
 # https://gnunn1.github.io/tilix-web/
 tilix:
     require-apt tilix
-    tilix --version
+    dpkg -s tilix | grep ^Version
 
 # https://docs.astral.sh/uv/
 uv:
@@ -142,4 +143,4 @@ vscode:
         --uri "https://packages.microsoft.com/repos/code" \
         --key "https://packages.microsoft.com/keys/microsoft.asc"
     update --add code "code --update-extensions"
-    code --version
+    code --version | head -n1
