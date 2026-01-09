@@ -72,6 +72,10 @@ github: git
     append ~/.bashrc 'eval "$(gh completion -s bash)"'
     gh --version | head -n1
 
+# https://htop.dev/
+htop:
+    require-apt htop
+
 # https://nodejs.org/en
 node: volta
     "${HOME}/.volta/bin/node" --version
