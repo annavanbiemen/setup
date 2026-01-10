@@ -1,4 +1,7 @@
-# shellcheck shell=bash disable=SC2016
+# shellcheck shell=bash disable=SC2016 disable=SC1036 disable=SC1088
+
+export PNPM_HOME := env("HOME") + "/.local/share/pnpm"
+export PATH := PNPM_HOME + ":" + env("PATH")
 
 # Print usage by default
 @_default:
@@ -84,11 +87,10 @@ node: pnpm
 
 # https://pnpm.io/
 pnpm:
-    #!/bin/bash
-    if [[ ! -f "${HOME}/.local/share/pnpm/pnpm" ]]; then
-        cp -p "${HOME}/.bashrc" "${HOME}/.bashrc.bak"
-        PNPM_HOME="${HOME}/.local/share/pnpm" require-sh bash https://get.pnpm.io/install.sh
-        mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"
+    if [ ! -f "${HOME}/.local/share/pnpm/pnpm" ]; then \
+        cp -p "${HOME}/.bashrc" "${HOME}/.bashrc.bak"; \
+        require-sh bash https://get.pnpm.io/install.sh; \
+        mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"; \
     fi
     update --add pnpm "${HOME}/.local/share/pnpm/pnpm self-update"
     append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
