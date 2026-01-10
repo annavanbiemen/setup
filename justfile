@@ -1,4 +1,7 @@
-# shellcheck shell=bash disable=SC2016
+# shellcheck shell=bash disable=SC2016 disable=SC1036 disable=SC1088
+
+export PNPM_HOME := env("HOME") + "/.local/share/pnpm"
+export PATH := PNPM_HOME + ":" + env("PATH")
 
 # Print usage by default
 @_default:
@@ -22,9 +25,9 @@ chrome:
     google-chrome --version
 
 # https://www.anthropic.com/claude-code
-claude: volta
-    require-volta @anthropic-ai/claude-code
-    "${HOME}/.volta/bin/claude" --version | head -n1
+claude: node
+    "${HOME}/.local/share/pnpm/pnpm" add --global @anthropic-ai/claude-code
+    "${HOME}/.local/share/pnpm/claude" --version | head -n1
 
 # https://direnv.net/
 direnv:
@@ -43,9 +46,9 @@ docker:
     docker --version
 
 # https://github.com/google-gemini/gemini-cli
-gemini: volta
-    require-volta @google/gemini-cli
-    "${HOME}/.volta/bin/gemini" --version
+gemini: node
+    "${HOME}/.local/share/pnpm/pnpm" add --global @google/gemini-cli
+    "${HOME}/.local/share/pnpm/gemini" --version
 
 # https://www.gimp.org/
 gimp:
@@ -75,20 +78,25 @@ github: git
 # https://htop.dev/
 htop:
     require-apt htop
+    htop --version
 
 # https://nodejs.org/en
-node: volta
-    "${HOME}/.volta/bin/node" --version
+node: pnpm
+    "${HOME}/.local/share/pnpm/pnpm" env use --global lts
+    node --version
 
-# https://volta.sh/
-volta:
-    require-sh bash -s -- --skip-setup https://get.volta.sh
-    require-volta node
-    update --add volta "${HOME}/.volta/bin/volta-migrate"
-    append ~/.env 'VOLTA_HOME="$HOME/.volta"'
-    append ~/.path ".volta/bin"
-    append ~/.bashrc 'eval "$(volta completions bash)"'
-    "${HOME}/.volta/bin/volta" --version
+# https://pnpm.io/
+pnpm:
+    if [ ! -f "${HOME}/.local/share/pnpm/pnpm" ]; then \
+        cp -p "${HOME}/.bashrc" "${HOME}/.bashrc.bak"; \
+        require-sh bash https://get.pnpm.io/install.sh; \
+        mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"; \
+    fi
+    update --add pnpm "${HOME}/.local/share/pnpm/pnpm self-update"
+    append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
+    append ~/.path ".local/share/pnpm"
+    append ~/.bashrc 'eval "$(pnpm completion bash)"'
+    "${HOME}/.local/share/pnpm/pnpm" --version
 
 # https://rustup.rs/
 rust:
