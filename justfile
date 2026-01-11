@@ -72,7 +72,7 @@ github: git
         --source github-cli \
         --uri "https://cli.github.com/packages" \
         --key "https://cli.github.com/packages/githubcli-archive-keyring.gpg"
-    append ~/.bashrc 'eval "$(gh completion -s bash)"'
+    append ~/.bash_completion 'eval "$(gh completion -s bash)"'
     gh --version | head -n1
 
 # https://htop.dev/
@@ -95,15 +95,15 @@ pnpm:
     update --add pnpm "${HOME}/.local/share/pnpm/pnpm self-update"
     append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
     append ~/.path ".local/share/pnpm"
-    append ~/.bashrc 'eval "$(pnpm completion bash)"'
+    append ~/.bash_completion 'eval "$(pnpm completion bash)"'
     "${HOME}/.local/share/pnpm/pnpm" --version
 
 # https://rustup.rs/
 rust:
     require-sh sh -s -- -y "https://sh.rustup.rs"
     update --add rustup "${HOME}/.cargo/bin/rustup update"
-    append ~/.bashrc 'eval "$(rustup completions bash cargo)"'
-    append ~/.bashrc 'eval "$(rustup completions bash rustup)"'
+    append ~/.bash_completion 'eval "$(rustup completions bash cargo)"'
+    append ~/.bash_completion 'eval "$(rustup completions bash rustup)"'
     "${HOME}/.cargo/bin/rustc" --version
 
 # https://deb.sury.org/
@@ -120,7 +120,7 @@ composer: git php
     require-apt unzip
     require-sh php -- --install-dir="${HOME}/.local/bin" --filename=composer "https://getcomposer.org/installer"
     update --add composer "${HOME}/.local/bin/composer self-update"
-    append ~/.bashrc 'eval "$(composer completion bash)"'
+    append ~/.bash_completion 'eval "$(composer completion bash)"'
     append ~/.path ".config/composer/vendor/bin"
     composer --no-ansi --version | head -n1
 
@@ -128,7 +128,7 @@ composer: git php
 symfony: composer git
     require-apt curl tar
     require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
-    append ~/.bashrc 'eval "$(symfony completion bash)"'
+    append ~/.bash_completion 'eval "$(symfony completion bash)"'
     symfony --no-ansi version
 
 # https://gnunn1.github.io/tilix-web/
@@ -140,8 +140,8 @@ tilix:
 uv:
     require-sh https://astral.sh/uv/install.sh
     update --add uv "${HOME}/.local/bin/uv self update"
-    append ~/.bashrc 'eval "$(uv generate-shell-completion bash)"'
-    append ~/.bashrc 'eval "$(uvx --generate-shell-completion bash)"'
+    append ~/.bash_completion 'eval "$(uv generate-shell-completion bash)"'
+    append ~/.bash_completion 'eval "$(uvx --generate-shell-completion bash)"'
     uv --version
 
 # https://www.vim.org/
