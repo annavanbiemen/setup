@@ -93,9 +93,10 @@ pnpm:
         mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"; \
     fi
     update --add pnpm "${HOME}/.local/share/pnpm/pnpm self-update"
+    update --add pnpm-packages "${HOME}/.local/share/pnpm/pnpm update --global"
     append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
     append ~/.path ".local/share/pnpm"
-    append ~/.bash_completion 'eval "$(pnpm completion bash)"'
+    append ~/.bash_completion 'eval "$(.local/share/pnpm/pnpm completion bash)"'
     "${HOME}/.local/share/pnpm/pnpm" --version
 
 # https://rustup.rs/
