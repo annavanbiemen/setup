@@ -96,7 +96,7 @@ pnpm:
     update --add pnpm-packages "${HOME}/.local/share/pnpm/pnpm update --global"
     append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
     append ~/.path ".local/share/pnpm"
-    append ~/.bash_completion 'eval "$(.local/share/pnpm/pnpm completion bash)"'
+    append ~/.bash_completion 'eval "$(~/.local/share/pnpm/pnpm completion bash)"'
     "${HOME}/.local/share/pnpm/pnpm" --version
 
 # https://rustup.rs/
