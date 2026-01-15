@@ -11,7 +11,7 @@ It provides:
 - `ide` to open your IDE in the current project.
 - `py` to start a Python repl with rich colors.
 
-# Demo
+## Demo
 
 Try this setup using [Docker] and the demo script:
 
@@ -19,7 +19,7 @@ Try this setup using [Docker] and the demo script:
 ./demo.sh
 ```
 
-# Installation
+## Installation
 
 First find a nice location in your home directory to clone this setup in, then:
 
