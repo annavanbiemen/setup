@@ -140,7 +140,7 @@ tilix:
 # https://docs.astral.sh/uv/
 uv:
     require-sh https://astral.sh/uv/install.sh
-    update --add uv "${HOME}/.local/bin/uv self update"
+    update --add uv "${HOME}/.local/bin/uv self update && ${HOME}/.local/bin/uv tool upgrade --all"
     append ~/.bash_completion 'eval "$(uv generate-shell-completion bash)"'
     append ~/.bash_completion 'eval "$(uvx --generate-shell-completion bash)"'
     uv --version
