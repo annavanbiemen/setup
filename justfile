@@ -103,6 +103,7 @@ pnpm:
 rust:
     require-sh sh -s -- -y "https://sh.rustup.rs"
     update --add rustup "${HOME}/.cargo/bin/rustup update"
+    append ~/.path ".cargo/bin"
     append ~/.bash_completion 'eval "$(rustup completions bash cargo)"'
     append ~/.bash_completion 'eval "$(rustup completions bash rustup)"'
     "${HOME}/.cargo/bin/rustc" --version
