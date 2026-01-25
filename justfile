@@ -25,9 +25,10 @@ chrome:
     google-chrome --version
 
 # https://www.anthropic.com/claude-code
-claude: node
-    "${HOME}/.local/share/pnpm/pnpm" add --global @anthropic-ai/claude-code
-    "${HOME}/.local/share/pnpm/claude" --version | head -n1
+claude:
+    curl -fsSL https://claude.ai/install.sh | bash
+    update --add claude "${HOME}/.local/bin/claude update"
+    "${HOME}/.local/bin/claude" --version | head -n1
 
 # https://direnv.net/
 direnv:
