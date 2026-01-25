@@ -26,7 +26,7 @@ chrome:
 
 # https://www.anthropic.com/claude-code
 claude:
-    curl -fsSL https://claude.ai/install.sh | bash
+    require-sh bash "https://claude.ai/install.sh"
     update --add claude "${HOME}/.local/bin/claude update"
     "${HOME}/.local/bin/claude" --version | head -n1
 
