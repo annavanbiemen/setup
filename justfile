@@ -26,6 +26,7 @@ chrome:
 
 # https://www.anthropic.com/claude-code
 claude:
+    require-apt socat bubblewrap
     require-sh bash "https://claude.ai/install.sh"
     update --add claude "${HOME}/.local/bin/claude update"
     "${HOME}/.local/bin/claude" --version | head -n1
