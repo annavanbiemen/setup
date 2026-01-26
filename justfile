@@ -31,6 +31,13 @@ claude:
     update --add claude "${HOME}/.local/bin/claude update"
     "${HOME}/.local/bin/claude" --version | head -n1
 
+# https://opencode.ai/download
+opencode:
+    require-sh bash "https://opencode.ai/install"
+    append ~/.path ".opencode/bin"
+    update --add opencode "${HOME}/.opencode/bin/opencode update"
+    "${HOME}/.opencode/bin/opencode" --version | head -n1
+
 # https://direnv.net/
 direnv:
     require-apt direnv
