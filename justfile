@@ -16,6 +16,14 @@ azure:
     update --add az "sudo /usr/bin/az upgrade"
     az --version | head -n1
 
+# https://brave.com/linux/
+brave:
+    require-apt brave-browser \
+        --source brave-browser \
+        --uri "https://brave-browser-apt-release.s3.brave.com" \
+        --key "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
+    brave-browser --version
+
 # https://www.google.com/chrome/
 chrome:
     require-apt google-chrome-stable \
