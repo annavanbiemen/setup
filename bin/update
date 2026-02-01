@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Import libraries
-source "$(dirname "$(dirname "$(realpath "$0")")")/lib/standard.sh"
+source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
 
 # Initialize variables
 update_dir="${HOME}/.updaterc.d"
