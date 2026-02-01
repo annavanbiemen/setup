@@ -8,7 +8,6 @@ It provides:
 - `env` to load your ~/.env and ~/.path files.
 - `setup` to install your entire dev toolchain.
 - `update` to update everything all at once.
-- `ide` to open your IDE in the current project.
 - `py` to start a Python repl with rich colors.
 
 ## Demo

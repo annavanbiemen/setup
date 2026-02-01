@@ -14,7 +14,6 @@ echo
 echo -e "    🔸 ${bold}env${reset} to load your ~/.env and ~/.path files."
 echo -e "    🔸 ${bold}setup${reset} to install your entire dev toolchain."
 echo -e "    🔸 ${bold}update${reset} to update everything all at once."
-echo -e "    🔸 ${bold}ide${reset} to open your IDE in the current project."
 echo -e "    🔸 ${bold}py${reset} to start a Python repl with rich colors."
 echo
 
