@@ -4,8 +4,7 @@
 set -euo pipefail
 
 # Import libraries
-import::loaded &> /dev/null || source "$(dirname "$(dirname "$(realpath "$0")")")/lib/import.sh"
-import::from standard import error raise usage
+source "$(dirname "$(dirname "$(realpath "$0")")")/lib/standard.sh"
 
 # Require execution of a remote shell script
 #
@@ -16,7 +15,7 @@ import::from standard import error raise usage
 #   url     URL to fetch the script from
 main() {
     # Read arguments
-    [[ $# -gt 0 ]] || raise usage
+    [[ $# -gt 0 ]] || standard::raise standard::usage
     local url="${!#}"
     local shell=("sh")
     if [[ $# -gt 1 ]]; then

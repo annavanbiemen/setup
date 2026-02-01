@@ -4,8 +4,7 @@
 set -euo pipefail
 
 # Import libraries
-import::loaded &> /dev/null || source "$(dirname "$(dirname "$(realpath "$0")")")/lib/import.sh"
-import::from standard import debug error raise usage version
+source "$(dirname "$(dirname "$(realpath "$0")")")/lib/standard.sh"
 
 # Append missing lines to file
 #
@@ -16,7 +15,7 @@ import::from standard import debug error raise usage version
 #   line ...    Lines to append (unless already present) one by one
 append() {
     # Read arguments
-    [[ $# -ge 2 ]] || raise error "At least 2 arguments required"
+    [[ $# -ge 2 ]] || standard::raise standard::error "At least 2 arguments required"
     local file="$1"
     local lines=("${@:2}")
 
@@ -50,16 +49,18 @@ main() {
     arguments=()
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
-        -d | --debug) debug ;;
+        -d | --debug)
+            standard::debug
+            ;;
         -h | --help)
-            usage
+            standard::usage "$@"
             return
             ;;
         -v | --version)
-            version
+            standard::version "$@"
             return
             ;;
-        -*) raise error "Unknown option passed: $1" ;;
+        -*) standard::raise standard::error "Unknown option passed: $1" ;;
         *) arguments+=("$1") ;;
         esac
         shift
