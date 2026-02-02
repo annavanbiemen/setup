@@ -238,6 +238,37 @@ These are loaded via the `env` script.
 - `install.sh` adds `bin/` to PATH via `~/.path`
 - Scripts can be called from anywhere after installation
 
+## Security Considerations
+
+### External Script Execution
+
+Several recipes in [lib/recipe.sh](lib/recipe.sh) download and execute scripts from external sources without cryptographic verification:
+
+- `recipe::azurecli` - <https://aka.ms/InstallAzureCLIDeb>
+- `recipe::opencode` - <https://opencode.ai/install>
+- `recipe::pnpm` - <https://get.pnpm.io/install.sh>
+- `recipe::rust` - <https://sh.rustup.rs>
+- `recipe::uv` - <https://astral.sh/uv/install.sh>
+
+**Security assumptions:**
+
+- HTTPS enforced via `--proto '=https'` flag in curl commands
+- Minimum TLS 1.2 required via `--tlsv1.2` flag
+- DNS and network infrastructure are trusted
+- No checksum or signature verification is performed
+
+**Risks:**
+
+- Compromised DNS or network could serve malicious content
+- No protection against supply chain attacks on upstream installers
+
+**Recommendations for maintainers:**
+
+- Consider adding optional checksum verification for critical tools
+- Pin installer script versions where possible
+- Review upstream installer scripts before updating
+- Use official distribution packages when available
+
 ## Notes for AI Agents
 
 1. **Never break backward compatibility** - Scripts are used in production
