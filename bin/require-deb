@@ -20,6 +20,7 @@ main() {
     # Download deb into temporary directory
     local dir
     dir=$(mktemp -d)
+    trap 'rm -rf "${dir}"' EXIT
     local file="${dir}/package.deb"
     curl --proto '=https' --tlsv1.2 --location --silent --show-error --fail --output "${file}" "${url}"
 
