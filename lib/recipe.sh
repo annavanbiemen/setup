@@ -18,7 +18,7 @@ recipe::brave() {
         --source brave-browser \
         --uri "https://brave-browser-apt-release.s3.brave.com" \
         --key "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
-    brave-browser --version
+    brave-browser --version | head -n1
 }
 
 # https://www.google.com/chrome/
@@ -27,7 +27,7 @@ recipe::chrome() {
         --source google-chrome \
         --uri "https://dl.google.com/linux/chrome/deb/" \
         --key "https://dl.google.com/linux/linux_signing_key.pub"
-    google-chrome --version
+    google-chrome --version | head -n1
 }
 
 # https://www.anthropic.com/claude-code
@@ -53,7 +53,7 @@ recipe::composer() {
 # https://direnv.net/
 recipe::direnv() {
     require-apt direnv
-    direnv --version
+    direnv --version | head -n1
 }
 
 # https://docs.docker.com/engine/install/ubuntu/
@@ -65,20 +65,21 @@ recipe::docker() {
         --suite-codename \
         --component stable
     sudo usermod -aG docker "$(whoami)"
-    docker --version
+    docker --version | head -n1
 }
 
 # https://github.com/google-gemini/gemini-cli
+# Dependencies: node
 recipe::gemini() {
     task::run recipe::node
     "${HOME}/.local/share/pnpm/pnpm" add --global @google/gemini-cli
-    "${HOME}/.local/share/pnpm/gemini" --version
+    gemini --version | head -n1
 }
 
 # https://www.gimp.org/
 recipe::gimp() {
     require-apt gimp
-    gimp --version
+    gimp --version | head -n1
 }
 
 # https://git-scm.com/
@@ -89,7 +90,7 @@ recipe::git() {
     git config --global core.autocrlf input
     git config --global init.defaultBranch main
     git config --global rebase.autosquash true
-    git --version
+    git --version | head -n1
 }
 
 # https://cli.github.com/
@@ -106,20 +107,21 @@ recipe::github() {
 # https://htop.dev/
 recipe::htop() {
     require-apt htop
-    htop --version
+    htop --version | head -n1
 }
 
 # https://github.com/casey/just
 recipe::just() {
     require-apt just
-    just --version
+    just --version | head -n1
 }
 
 # https://nodejs.org/en
+# Dependencies: pnpm
 recipe::node() {
     task::run recipe::pnpm
     "${HOME}/.local/share/pnpm/pnpm" env use --global lts
-    node --version
+    node --version | head -n1
 }
 
 # https://opencode.ai/download
@@ -158,7 +160,7 @@ recipe::pnpm() {
     append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
     append ~/.path ".local/share/pnpm"
     append ~/.bash_completion 'eval "$(~/.local/share/pnpm/pnpm completion bash)"'
-    "${HOME}/.local/share/pnpm/pnpm" --version
+    "${HOME}/.local/share/pnpm/pnpm" --version | head -n1
 }
 
 # https://rustup.rs/
@@ -168,23 +170,24 @@ recipe::rust() {
     append ~/.path ".cargo/bin"
     append ~/.bash_completion 'eval "$(rustup completions bash cargo)"'
     append ~/.bash_completion 'eval "$(rustup completions bash rustup)"'
-    "${HOME}/.cargo/bin/rustc" --version
+    "${HOME}/.cargo/bin/rustc" --version | head -n1
 }
 
 # https://symfony.com/download
+# Dependencies: composer, git
 recipe::symfony() {
     task::run recipe::composer
     task::run recipe::git
     require-apt curl tar
     require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
     append ~/.bash_completion 'eval "$(symfony completion bash)"'
-    symfony --no-ansi version
+    symfony --no-ansi version | head -n1
 }
 
 # https://gnunn1.github.io/tilix-web/
 recipe::tilix() {
     require-apt tilix
-    dpkg -s tilix | grep ^Version
+    dpkg -s tilix | grep ^Version | head -n1
 }
 
 # https://docs.astral.sh/uv/
@@ -193,7 +196,7 @@ recipe::uv() {
     update --add uv "${HOME}/.local/bin/uv self update && ${HOME}/.local/bin/uv tool upgrade --all"
     append ~/.bash_completion 'eval "$(uv generate-shell-completion bash)"'
     append ~/.bash_completion 'eval "$(uvx --generate-shell-completion bash)"'
-    uv --version
+    uv --version | head -n1
 }
 
 # https://www.vim.org/
