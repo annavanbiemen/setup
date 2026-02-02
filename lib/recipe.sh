@@ -146,8 +146,12 @@ recipe::pnpm() {
     export PATH="${PNPM_HOME}:${PATH}"
     if [[ ! -f "${HOME}/.local/share/pnpm/pnpm" ]]; then
         cp -p "${HOME}/.bashrc" "${HOME}/.bashrc.bak"
-        require-sh bash https://get.pnpm.io/install.sh
-        mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"
+        if require-sh bash https://get.pnpm.io/install.sh; then
+            rm "${HOME}/.bashrc.bak"
+        else
+            mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"
+            return 1
+        fi
     fi
     update --add pnpm "${HOME}/.local/share/pnpm/pnpm self-update"
     update --add pnpm-packages "${HOME}/.local/share/pnpm/pnpm update --global"
