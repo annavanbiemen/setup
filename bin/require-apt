@@ -95,6 +95,7 @@ if [[ -n "${source_name}" ]]; then
     # --- Download the GPG key into a variable ---
     echo "Downloading GPG key from ${source_key}..."
     GPG_HOME=$(mktemp -d)
+    trap 'rm -rf "${GPG_HOME}"' EXIT
     GPG_KEY_ORIGINAL="${GPG_HOME}/key.gpg"
     GPG_KEY_ARMORED="${GPG_HOME}/key.asc"
     curl -fsSL "${source_key}" > "${GPG_KEY_ORIGINAL}"
