@@ -6,33 +6,24 @@ set -euo pipefail
 # Import libraries
 source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
 
-# Python REPL with rich colors and optional UV version management
+# Run Python 3.14 with rich colors using uv
 #
-# Usage: py [python-args]
+# Usage: py [arguments]
 #
 # Arguments:
-#   python-args  Arguments to pass to Python
-#
-# This script runs Python 3.14 via uvx with rich library for enhanced REPL
-# colors and formatting. The PYTHONSTARTUP environment variable is set to
-# load custom Python startup configuration from etc/pythonrc.
-
-# Setup Python + UV
-if ! command -v uvx &> /dev/null; then
-    if [[ ! -f "${HOME}/.local/bin/uvx" ]]; then
-        if ! setup uv; then
-            standard::raise "Failed to install uv. Please run 'setup uv' manually."
-        fi
+#   arguments  Arguments to pass to Python
+main() {
+    # Check uvx availability
+    if ! command -v uvx &> /dev/null; then
+        standard::raise "Required 'uvx' command not found. Please run 'setup uv' first."
     fi
-    # Verify uvx is now available
-    if ! command -v uvx &> /dev/null && [[ ! -f "${HOME}/.local/bin/uvx" ]]; then
-        standard::raise "uvx not found after installation. Check your PATH or run 'setup uv' manually."
-    fi
-fi
 
-# Python startup script
-PYTHONSTARTUP="$(dirname "$(dirname "$0")")/etc/pythonrc"
-export PYTHONSTARTUP
+    # Python startup script
+    PYTHONSTARTUP="$(dirname "$(dirname "$0")")/etc/pythonrc"
+    export PYTHONSTARTUP
 
-# Download and invoke Python 3.14 using uvx
-uvx --python 3.14 --with rich -- python "$@"
+    # Download and invoke Python 3.14 using uvx
+    uvx --python 3.14 --with rich -- python "$@"
+}
+
+main "$@"
