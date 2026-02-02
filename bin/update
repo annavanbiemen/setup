@@ -54,6 +54,7 @@ update::install_sudoers() {
     local tempfile
 
     tempfile="$(mktemp)"
+    trap 'rm -f "${tempfile}"' EXIT
     {
         echo "${update_user} ALL=(ALL) NOPASSWD: /usr/bin/apt-get full-upgrade --update --auto-remove --purge --yes"
         echo "${update_user} ALL=(ALL) NOPASSWD: /usr/bin/snap refresh"
