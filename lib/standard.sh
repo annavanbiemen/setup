@@ -67,26 +67,12 @@ standard::with() {
     return "${exit}"
 }
 
-# Display help information from function comments
+# Show help information from function comments
 #
 # Usage: standard::help <function>
 #
 # Arguments:
 #   function  Function name to display help for
-#
-# Parses comment blocks above function definitions and displays them as help text.
-# Comment blocks must be in the following format:
-#
-#   # Brief description
-#   #
-#   # Usage: function_name <arg>
-#   #
-#   # Arguments:
-#   #   arg  Description
-#
-# The function uses bash's extdebug option to locate the file where the function
-# is defined, then uses awk to extract and display the comment block immediately
-# preceding the function definition.
 standard::help() {
     # Read arguments
     local function="${1:-}"
