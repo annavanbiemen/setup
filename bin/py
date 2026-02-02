@@ -3,6 +3,9 @@
 # Exit on errors
 set -euo pipefail
 
+# Import libraries
+source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
+
 # Python REPL with rich colors and optional UV version management
 #
 # Usage: py [python-args]
@@ -17,7 +20,13 @@ set -euo pipefail
 # Setup Python + UV
 if ! command -v uvx &> /dev/null; then
     if [[ ! -f "${HOME}/.local/bin/uvx" ]]; then
-        setup uv
+        if ! setup uv; then
+            standard::raise "Failed to install uv. Please run 'setup uv' manually."
+        fi
+    fi
+    # Verify uvx is now available
+    if ! command -v uvx &> /dev/null && [[ ! -f "${HOME}/.local/bin/uvx" ]]; then
+        standard::raise "uvx not found after installation. Check your PATH or run 'setup uv' manually."
     fi
 fi
 
