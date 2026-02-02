@@ -8,7 +8,7 @@ declare -A _tasks
 # Usage: task::run <task>
 #
 # Arguments:
-#   task                task name to execute
+#   task  task name to execute
 task::run() {
     local task="$1"
     local status="${_tasks[${task}]:-}"
@@ -41,7 +41,7 @@ task::run() {
 # Usage: task::schedule <task>
 #
 # Arguments:
-#   task                task name to schedule
+#   task  task name to schedule
 task::schedule() {
     local task="$1"
 
@@ -87,7 +87,7 @@ task::work() {
 # Usage: task::list <namespace>
 #
 # Arguments:
-#   namespace           Namespace to filter
+#   namespace  Namespace to filter
 task::list() {
     local comment
 
@@ -103,7 +103,7 @@ task::list() {
 # Usage: task::summary <namespace>
 #
 # Arguments:
-#   namespace           Namespace to filter
+#   namespace  Namespace to filter
 task::summary() {
     declare -F | grep "^declare -f $1::" | while read -r _ _ func; do
         echo "${func#"$1::"}"

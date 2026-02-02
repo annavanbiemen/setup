@@ -11,8 +11,8 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 # Usage: require-sh [shell] ... <url>
 #
 # Arguments:
-#   shell   Shell to pipe the script to (default: sh)
-#   url     URL to fetch the script from
+#   shell  Shell to pipe the script to (default: sh)
+#   url    URL to fetch the script from
 main() {
     # Read arguments
     local url="${!#}"

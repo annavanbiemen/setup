@@ -35,8 +35,8 @@ append() {
 #   -v, --version  Show version information
 #
 # Arguments:
-#   file        File to append to
-#   line ...    Lines to append (unless already present) one by one
+#   file      File to append to
+#   line ...  Lines to append (unless already present) one by one
 main() {
     # Parse arguments
     arguments=()
