@@ -1,15 +1,5 @@
 # shellcheck shell=bash disable=SC2016
 
-# Setup task library by Anna van Biemen
-#
-# Functions:
-#   task::run           Run a task and its dependencies
-#   task::schedule      Schedule a task to run later
-#   task::next          Get next scheduled task
-#   task::work          Run all scheduled tasks until completion
-#   task::list          List all available tasks
-#   task::summary       Summarize available tasks
-
 # Track completed tasks
 declare -A _tasks
 

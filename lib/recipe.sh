@@ -1,10 +1,5 @@
 # shellcheck shell=bash disable=SC2016
 
-# Setup recipe library by Anna van Biemen
-#
-# Functions:
-#   recipe::<name>      Individual recipe implementations
-
 # https://github.com/Azure/azure-cli
 recipe::azure() {
     require-sh sudo bash "https://aka.ms/InstallAzureCLIDeb"

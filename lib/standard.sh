@@ -1,15 +1,5 @@
 # shellcheck shell=bash
 
-# Setup standard library by Anna van Biemen
-#
-# Functions:
-#   standard::raise [message]
-#   standard::trace
-#   standard::debug
-#   standard::with <option>
-#   standard::help <function>
-#   standard::version
-
 # Raise an error
 #
 # Usage: standard::raise [message]
