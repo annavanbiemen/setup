@@ -14,61 +14,15 @@ source ./lib/standard.sh
 source ./lib/recipe.sh
 source ./lib/task.sh
 
-# List recipes
+# Add recipes
 #
-# Usage: setup::list
-setup::list() {
-    echo "Recipes:"
-    task::list recipe
-}
-
-# Setup development environment by running recipes
+# Usage: setup::add <recipe>...
 #
-# Usage: setup [options] [ <recipe> ... ]
-#
-# Options:
-#   -l, --list     List recipes with comments
-#   -s, --summary  Summarize recipes
-#   -d, --debug    Show debug information
-#   -h, --help     Show help information
-#   -v, --version  Show version information
-#
-# Arguments:
-#   recipe  One or more recipes to execute
-main() {
-    # Show list if no arguments
-    if [[ "$#" -eq 0 ]]; then
-        setup::list
-        return
-    fi
-
-    # Parse arguments
+# Arguments
+#   recipe  Recipe(s) to add
+setup::add() {
     while [[ "$#" -gt 0 ]]; do
-        case "$1" in
-        -s | --summary)
-            task::summary recipe
-            ;;
-        -l | --list)
-            setup::list
-            ;;
-        -d | --debug)
-            standard::debug
-            ;;
-        -h | --help)
-            standard::help main
-            return
-            ;;
-        -v | --version)
-            standard::version
-            return
-            ;;
-        -*)
-            standard::raise "Unknown option passed: $1"
-            ;;
-        *)
-            task::schedule "recipe::$1"
-            ;;
-        esac
+        task::schedule "recipe::$1"
         shift
     done
 
@@ -76,5 +30,61 @@ main() {
     task::work
 }
 
+# List available recipes with comments
+#
+# Usage: setup::list
+setup::list() {
+    echo "Recipes:"
+    task::list recipe
+}
+
+# Summarize available recipes
+#
+# Usage: setup::summary
+setup::summary() {
+    task::summary recipe
+}
+
+# Setup development environment by running recipes
+#
+# Usage: setup [command]
+#
+# Commands:
+#   add recipe...  Add recipes
+#   help           Show help information
+#   list           List available recipes with comments
+#   summary        Summarize available recipes
+#   version        Show version information
+#
+# Arguments:
+#   recipe  One or more recipes to execute
+setup::main() {
+    # Read command
+    local command="${1:-help}"
+
+    # Dispatch command
+    case "${command}" in
+    add)
+        shift
+        setup::add "$@"
+        ;;
+    list)
+        setup::list
+        ;;
+    summary)
+        setup::summary
+        ;;
+    help)
+        standard::help setup::main
+        ;;
+    version)
+        standard::version
+        ;;
+    *)
+        standard::raise "Unknown command: ${command}"
+        ;;
+    esac
+}
+
 # Invoke main entrypoint
-main "$@"
+setup::main "$@"
