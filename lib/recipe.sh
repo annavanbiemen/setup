@@ -39,6 +39,7 @@ recipe::claude() {
 }
 
 # https://getcomposer.org/download/
+# Dependencies: git, php
 recipe::composer() {
     task::run recipe::git
     task::run recipe::php
@@ -94,6 +95,7 @@ recipe::git() {
 }
 
 # https://cli.github.com/
+# Dependencies: git
 recipe::github() {
     task::run recipe::git
     require-apt gh \
