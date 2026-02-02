@@ -9,11 +9,17 @@ cd "$(dirname "$0")"
 # Lint scripts using bash (and POSIX-compatible dash in case of `env`)
 bin/require-apt dash bash
 dash -n env
-find ./*.sh bin/* lib/*.sh env -type f -exec bash -x -n {} +
+find . -maxdepth 1 -name '*.sh' -type f -exec bash -x -n {} +
+find bin -type f -exec bash -x -n {} +
+find lib -name '*.sh' -type f -exec bash -x -n {} +
+bash -x -n env
 
 # Run shellcheck on all scripts
 bin/require-apt shellcheck
-find ./*.sh bin/* lib/*.sh env -type f -exec shellcheck -x {} +
+find . -maxdepth 1 -name '*.sh' -type f -exec shellcheck -x {} +
+find bin -type f -exec shellcheck -x {} +
+find lib -name '*.sh' -type f -exec shellcheck -x {} +
+shellcheck -x env
 
 # Check shell script formatting using shfmt
 bin/require-apt shfmt
