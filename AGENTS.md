@@ -19,7 +19,7 @@ Anna's local Ubuntu setup repository containing configurations and scripts for m
 │   ├── setup               # Install entire dev toolchain
 │   └── update              # Update all installed tools
 ├── lib/                    # Shared bash libraries
-│   └── standard.sh         # Standard utilities (error, raise, usage, etc.)
+│   └── standard.sh         # Standard utilities (raise, help, trace, debug, etc.)
 ├── etc/                    # Configuration files
 │   └── pythonrc            # Python REPL configuration
 ├── check.sh                # Run shellcheck and shfmt on all scripts
@@ -46,8 +46,7 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 
 **Available functions:**
 
-- `standard::error` - Output error messages to stderr
-- `standard::raise` - Exit with non-zero code, optionally running a command
+- `standard::raise` - Output error messages to stderr
 - `standard::trace` - Print stack trace with arguments
 - `standard::debug` - Enable debug mode with stack traces on errors
 - `standard::with` - Run command with shell option temporarily enabled
@@ -74,9 +73,6 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 # Arguments:
 #   arg  Description
 main() {
-    # Validate arguments
-    [[ "$#" -eq N ]] || standard::raise standard::help
-
     # Implementation
     # ...
 }
@@ -122,7 +118,7 @@ Each recipe typically uses one or more `require-*` scripts.
 
 ### Libraries
 
-- **[lib/standard.sh](lib/standard.sh)** - Standard utilities (`standard::error`, `standard::raise`, `standard::help`, `standard::trace`, `standard::debug`, `standard::with`, `standard::version`)
+- **[lib/standard.sh](lib/standard.sh)** - Standard utilities (`standard::raise`, `standard::help`, `standard::trace`, `standard::debug`, `standard::with`, `standard::version`)
 - **[lib/task.sh](lib/task.sh)** - Task dependency management (`task::run`, `task::schedule`, `task::next`, `task::work`, `task::list`, `task::summary`)
 - **[lib/recipe.sh](lib/recipe.sh)** - Installation recipes for development tools (used by justfile). Contains `recipe::*` functions for various tools like docker, brave, pnpm, node, etc. Note: The pnpm recipe backs up and restores `~/.bashrc` to prevent the installer from modifying it.
 
@@ -139,9 +135,7 @@ Each recipe typically uses one or more `require-*` scripts.
 1. **Always use strict mode:** `set -euo pipefail`
 2. **Source standard.sh** for all new scripts in `bin/` that need utility functions
 3. **Follow the main() pattern** for executable scripts
-4. **Use standard library functions:**
-   - `raise usage` instead of manual usage + exit
-   - `raise error "message"` instead of echo + exit
+4. **Use standard library functions:** `standard::raise "message"` for error handling
 5. **Declare local variables:** Always use `local` in functions
 6. **Separate declaration from assignment** when using command substitution:
 
@@ -278,6 +272,6 @@ Several recipes in [lib/recipe.sh](lib/recipe.sh) download and execute scripts f
 5. **Follow the existing code style** - Use `./format.sh` to auto-format
 6. **Document all functions** - Follow the established documentation format
 7. **Use library functions** - Don't duplicate functionality that exists in lib/
-8. **Handle errors gracefully** - Use `raise error` for clear error messages
+8. **Handle errors gracefully** - Use `standard::raise` to stop execution and show an error message
 9. **Avoid circular dependencies** - Be careful when require-* scripts call each other
 10. **Keep scripts focused** - Each script should do one thing well

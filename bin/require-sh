@@ -15,7 +15,6 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 #   url     URL to fetch the script from
 main() {
     # Read arguments
-    [[ $# -gt 0 ]] || standard::raise standard::help
     local url="${!#}"
     local shell=("sh")
     if [[ $# -gt 1 ]]; then

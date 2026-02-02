@@ -9,7 +9,6 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 # Internal function to append missing lines to file
 append() {
     # Read arguments
-    [[ $# -ge 2 ]] || standard::raise standard::error "At least 2 arguments required"
     local file="$1"
     local lines=("${@:2}")
 
@@ -47,7 +46,6 @@ main() {
             standard::debug
             ;;
         -h | --help)
-            # shellcheck disable=SC2119
             standard::help
             return
             ;;
@@ -55,7 +53,9 @@ main() {
             standard::version
             return
             ;;
-        -*) standard::raise standard::error "Unknown option passed: $1" ;;
+        -*)
+            standard::raise "Unknown option passed: $1"
+            ;;
         *) arguments+=("$1") ;;
         esac
         shift

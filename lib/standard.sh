@@ -3,38 +3,23 @@
 # Setup standard library by Anna van Biemen
 #
 # Functions:
-#   standard::error [message]
-#   standard::raise [command]
+#   standard::raise [message]
 #   standard::trace
 #   standard::debug
 #   standard::with <option>
 #   standard::help <function>
 #   standard::version
 
-# Output an error
+# Raise an error
 #
-# Usage: standard::error [message]
+# Usage: standard::raise [message]
 #
 # Arguments:
 #   message  Message text
-standard::error() {
-    local text="$1"
-
-    printf "ERROR: %s" "${text}" >&2
-}
-
-# Raise non-zero exit code and output from optional command to STDERR
-#
-# Usage: standard::raise [command]
-#
-# Arguments:
-#   command  Optional command to run, output gets redirected to STDERR
-#
-# Returns non-zero exit code returned from command or 1 otherwise
 standard::raise() {
-    if [[ "$#" -gt 0 ]]; then
-        "$@" >&2 || return $?
-    fi
+    local text="${1:-"Unknown Error!"}"
+
+    echo "${text}" >&2
 
     return 1
 }
@@ -92,12 +77,9 @@ standard::with() {
     return "${exit}"
 }
 
-# Show help information for a function
-#
-# Usage: standard::help [function]
 standard::help() {
     # Read arguments
-    local function="${1:-${FUNCNAME[1]}}"
+    local function="${1:-}"
 
     # Determine file where function was defined
     local info file

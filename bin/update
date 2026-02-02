@@ -20,10 +20,13 @@ update_sudoers_file="/etc/sudoers.d/90-update-${update_user}"
 #   command  Command to add
 update::add() {
     # Read arguments
-    [[ $# -eq 2 ]] || standard::raise standard::help
-    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || standard::raise standard::help
     local name="$1"
     local command="$2"
+
+    # Check name
+    if [[ ! "${name}" =~ ^[[:alnum:]_-]+$ ]]; then
+        standard::raise "Name can only contain letters, numbers, dashes and underscores"
+    fi
 
     # Create directory
     if [[ ! -d "${update_dir}" ]]; then
@@ -38,9 +41,12 @@ update::add() {
 # Remove named update command
 update::remove() {
     # Read arguments
-    [[ $# -eq 1 ]] || standard::raise standard::help
-    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || standard::raise standard::help
     local name="$1"
+
+    # Check name
+    if [[ ! "${name}" =~ ^[[:alnum:]_-]+$ ]]; then
+        standard::raise "Name can only contain letters, numbers, dashes and underscores"
+    fi
 
     # Remove file
     local file="${update_dir}/${name}"
@@ -122,7 +128,9 @@ main() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -a | --add)
-            [[ "$#" -ge 3 ]] || standard::raise standard::error "Missing required arguments for --add"
+            if [[ "$#" -lt 3 ]]; then
+                standard::raise "Missing required arguments for --add"
+            fi
             update::add "$2" "$3"
             return
             ;;
@@ -130,7 +138,6 @@ main() {
             standard::debug
             ;;
         -h | --help)
-            # shellcheck disable=SC2119
             standard::help
             return
             ;;
@@ -139,7 +146,9 @@ main() {
             return
             ;;
         -r | --remove)
-            [[ "$#" -ge 2 ]] || standard::raise standard::error "Missing required argument for --remove"
+            if [[ "$#" -lt 2 ]]; then
+                standard::raise "Missing required argument for --remove"
+            fi
             update::remove "$2"
             return
             ;;
@@ -147,8 +156,12 @@ main() {
             standard::version
             return
             ;;
-        -*) standard::raise standard::error "Unknown option passed: $1" ;;
-        *) standard::raise standard::error "Unknown argument passed: $1" ;;
+        -*)
+            standard::raise "Unknown option passed: $1"
+            ;;
+        *)
+            standard::raise "Unknown argument passed: $1"
+            ;;
         esac
         shift
     done

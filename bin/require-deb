@@ -14,7 +14,6 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 #   url  URL to download the package file from
 main() {
     # Read arguments
-    [[ "$#" -eq 1 ]] || standard::raise standard::help
     local url="$1"
 
     # Download deb into temporary directory

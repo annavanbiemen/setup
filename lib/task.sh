@@ -30,12 +30,12 @@ task::run() {
 
     # Verify task exists
     if ! declare -f "${task}" > /dev/null; then
-        standard::raise standard::error "Unknown task: ${task}"
+        standard::raise "Unknown task: ${task}"
     fi
 
     # Mark as in-progress (detect circular dependencies)
     if [[ "${status}" == "in-progress" ]]; then
-        standard::raise standard::error "Circular dependency detected: ${task}"
+        standard::raise "Circular dependency detected: ${task}"
     fi
     _tasks[${task}]="in-progress"
 

@@ -15,7 +15,7 @@ find lib -name '*.sh' -type f -exec bash -x -n {} +
 bash -x -n env
 
 # Run shellcheck on all scripts
-bin/require-apt shellcheck
+#bin/require-apt shellcheck
 find . -maxdepth 1 -name '*.sh' -type f -exec shellcheck -x {} +
 find bin -type f -exec shellcheck -x {} +
 find lib -name '*.sh' -type f -exec shellcheck -x {} +

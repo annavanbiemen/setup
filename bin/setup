@@ -62,7 +62,9 @@ main() {
             standard::version
             return
             ;;
-        -*) standard::raise standard::error "Unknown option passed: $1" ;;
+        -*)
+            standard::raise "Unknown option passed: $1"
+            ;;
         *)
             task::schedule "recipe::$1"
             ;;
