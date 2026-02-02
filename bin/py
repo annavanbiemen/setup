@@ -3,6 +3,17 @@
 # Exit on errors
 set -euo pipefail
 
+# Python REPL with rich colors and optional UV version management
+#
+# Usage: py [python-args]
+#
+# Arguments:
+#   python-args  Arguments to pass to Python
+#
+# This script runs Python 3.14 via uvx with rich library for enhanced REPL
+# colors and formatting. The PYTHONSTARTUP environment variable is set to
+# load custom Python startup configuration from etc/pythonrc.
+
 # Setup Python + UV
 if ! command -v uvx &> /dev/null; then
     if [[ ! -f "${HOME}/.local/bin/uvx" ]]; then
