@@ -122,6 +122,7 @@ main() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -a | --add)
+            [[ "$#" -ge 3 ]] || standard::raise standard::error "Missing required arguments for --add"
             update::add "$2" "$3"
             return
             ;;
@@ -137,6 +138,7 @@ main() {
             return
             ;;
         -r | --remove)
+            [[ "$#" -ge 2 ]] || standard::raise standard::error "Missing required argument for --remove"
             update::remove "$2"
             return
             ;;
