@@ -115,8 +115,8 @@ update() {
 #
 # Options:
 #   -a. --add <name> <command>  Add named update command
-#   -d, --debug                 Show debug output
-#   -h, --help                  Show usage information
+#   -d, --debug                 Show debug information
+#   -h, --help                  Show help information
 #   -r, --remove <name>         Remove named update command"
 #   -i, --install-sudoers       Install sudoers file to prevent password prompts"
 #   -v, --version               Show version information

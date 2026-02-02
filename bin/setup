@@ -29,8 +29,8 @@ setup::list() {
 # Options:
 #   -l, --list     List recipes with comments
 #   -s, --summary  Summarize recipes
-#   -d, --debug    Show debug output
-#   -h, --help     Show usage information
+#   -d, --debug    Show debug information
+#   -h, --help     Show help information
 #   -v, --version  Show version information
 #
 # Arguments:

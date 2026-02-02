@@ -30,9 +30,9 @@ append() {
 # Usage: append [options] <file> <line> [<line> ...]
 #
 # Options:
-#   -d, --debug     Show debug output
-#   -h, --help      Show usage information
-#   -v, --version   Show version information
+#   -d, --debug    Show debug information
+#   -h, --help     Show help information
+#   -v, --version  Show version information
 #
 # Arguments:
 #   file        File to append to
