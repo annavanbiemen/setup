@@ -98,7 +98,7 @@ if [[ -n "${source_name}" ]]; then
     trap 'rm -rf "${GPG_HOME}"' EXIT
     GPG_KEY_ORIGINAL="${GPG_HOME}/key.gpg"
     GPG_KEY_ARMORED="${GPG_HOME}/key.asc"
-    curl -fsSL "${source_key}" > "${GPG_KEY_ORIGINAL}"
+    curl --proto '=https' --tlsv1.2 -fsSL "${source_key}" > "${GPG_KEY_ORIGINAL}"
     gpg --homedir "${GPG_HOME}" --import "${GPG_KEY_ORIGINAL}"
     gpg --homedir "${GPG_HOME}" --export --armor > "${GPG_KEY_ARMORED}"
 
