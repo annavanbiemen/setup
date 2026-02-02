@@ -102,7 +102,7 @@ task::list() {
     local comment
 
     for task in $(task::summary "$1"); do
-        comment=$(standard::usage "$1::${task}" | head -n1)
+        comment=$(standard::help "$1::${task}" | head -n1)
 
         printf "  %-12s  %s\n" "${task}" "${comment:-}"
     done

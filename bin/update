@@ -20,8 +20,8 @@ update_sudoers_file="/etc/sudoers.d/90-update-${update_user}"
 #   command  Command to add
 update::add() {
     # Read arguments
-    [[ $# -eq 2 ]] || standard::raise standard::usage
-    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || standard::raise standard::usage
+    [[ $# -eq 2 ]] || standard::raise standard::help
+    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || standard::raise standard::help
     local name="$1"
     local command="$2"
 
@@ -38,8 +38,8 @@ update::add() {
 # Remove named update command
 update::remove() {
     # Read arguments
-    [[ $# -eq 1 ]] || standard::raise standard::usage
-    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || standard::raise standard::usage
+    [[ $# -eq 1 ]] || standard::raise standard::help
+    [[ "$1" =~ ^[[:alnum:]_-]+$ ]] || standard::raise standard::help
     local name="$1"
 
     # Remove file
@@ -130,7 +130,8 @@ main() {
             standard::debug
             ;;
         -h | --help)
-            standard::usage "$@"
+            # shellcheck disable=SC2119
+            standard::help
             return
             ;;
         -i | --install-sudoers)

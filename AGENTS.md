@@ -75,7 +75,7 @@ source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.s
 #   arg  Description
 main() {
     # Validate arguments
-    [[ "$#" -eq N ]] || standard::raise standard::usage
+    [[ "$#" -eq N ]] || standard::raise standard::help
 
     # Implementation
     # ...
@@ -122,7 +122,7 @@ Each recipe typically uses one or more `require-*` scripts.
 
 ### Libraries
 
-- **[lib/standard.sh](lib/standard.sh)** - Standard utilities (`standard::error`, `standard::raise`, `standard::usage`, `standard::trace`, `standard::debug`, `standard::with`, `standard::version`)
+- **[lib/standard.sh](lib/standard.sh)** - Standard utilities (`standard::error`, `standard::raise`, `standard::help`, `standard::trace`, `standard::debug`, `standard::with`, `standard::version`)
 - **[lib/task.sh](lib/task.sh)** - Task dependency management (`task::run`, `task::schedule`, `task::next`, `task::work`, `task::list`, `task::summary`)
 - **[lib/recipe.sh](lib/recipe.sh)** - Installation recipes for development tools (used by justfile). Contains `recipe::*` functions for various tools like docker, brave, pnpm, node, etc. Note: The pnpm recipe backs up and restores `~/.bashrc` to prevent the installer from modifying it.
 

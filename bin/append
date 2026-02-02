@@ -47,7 +47,8 @@ main() {
             standard::debug
             ;;
         -h | --help)
-            standard::usage "$@"
+            # shellcheck disable=SC2119
+            standard::help
             return
             ;;
         -v | --version)

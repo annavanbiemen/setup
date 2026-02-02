@@ -8,7 +8,7 @@
 #   standard::trace
 #   standard::debug
 #   standard::with <option>
-#   standard::usage <function>
+#   standard::help <function>
 #   standard::version
 
 # Output an error
@@ -92,15 +92,11 @@ standard::with() {
     return "${exit}"
 }
 
-# Show usage information for a function
+# Show help information for a function
 #
-# Usage: standard::usage [function]
-#
-# Arguments
-#   function  Function to display usage for
-standard::usage() {
+# Usage: standard::help [function]
+standard::help() {
     # Read arguments
-    [[ $# -le 1 ]] || return 1
     local function="${1:-main}"
 
     # Determine file where function was defined
