@@ -97,7 +97,7 @@ standard::with() {
 # Usage: standard::help [function]
 standard::help() {
     # Read arguments
-    local function="${1:-main}"
+    local function="${1:-${FUNCNAME[1]}}"
 
     # Determine file where function was defined
     local info file
