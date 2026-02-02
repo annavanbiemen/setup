@@ -9,8 +9,70 @@ cd "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
 # Source the env script
 source ./env
 
-# Require just
-require-apt just
+# Import libraries
+source ./lib/standard.sh
+source ./lib/recipe.sh
+source ./lib/task.sh
 
-# Run tasks using just
-just "$@"
+# List recipes
+#
+# Usage: setup::list
+setup::list() {
+    echo "Recipes:"
+    task::list recipe
+}
+
+# Setup development environment by running recipes
+#
+# Usage: setup [options] [ <recipe> ... ]
+#
+# Options:
+#   -l, --list     List recipes with comments
+#   -s, --summary  Summarize recipes
+#   -d, --debug    Show debug output
+#   -h, --help     Show usage information
+#   -v, --version  Show version information
+#
+# Arguments:
+#   recipe  One or more recipes to execute
+main() {
+    # Show list if no arguments
+    if [[ "$#" -eq 0 ]]; then
+        setup::list
+        return
+    fi
+
+    # Parse arguments
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -s | --summary)
+            task::summary recipe
+            ;;
+        -l | --list)
+            setup::list
+            ;;
+        -d | --debug)
+            standard::debug
+            ;;
+        -h | --help)
+            standard::usage
+            return
+            ;;
+        -v | --version)
+            standard::version "$@"
+            return
+            ;;
+        -*) standard::raise standard::error "Unknown option passed: $1" ;;
+        *)
+            task::schedule "recipe::$1"
+            ;;
+        esac
+        shift
+    done
+
+    # Run all scheduled tasks
+    task::work
+}
+
+# Invoke main entrypoint
+main "$@"

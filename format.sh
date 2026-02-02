@@ -10,9 +10,5 @@ cd "$(dirname "$0")"
 bin/require-apt shfmt
 shfmt --indent 4 --space-redirects --write ./*.sh bin/* lib/*.sh env
 
-# Format justfile
-bin/require-apt just
-just --fmt --unstable
-
 # Done!
 echo "Done!"

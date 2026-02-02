@@ -13,7 +13,7 @@ mkdir -p log
 docker build --build-arg TZ="$(cat /etc/timezone)" --tag setup .
 
 echo "Testing recipes:"
-for recipe in $(just --summary); do
+for recipe in $(docker run --rm setup setup/bin/setup --summary); do
     printf -- "- %-10s" "${recipe}"
     if docker run -it --rm --env "TERM=${TERM}" --hostname sandbox setup setup/bin/setup "${recipe}" &> "log/${recipe}.log"; then
         printf "✅ "

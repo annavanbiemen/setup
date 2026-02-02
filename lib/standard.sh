@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 
-# Setup main library by Anna van Biemen
+# Setup standard library by Anna van Biemen
 #
 # Functions:
 #   standard::error [message]
@@ -123,7 +123,7 @@ standard::usage() {
         comment_block = comment_block line "\n"
         next
     }
-    /./ {
+    // {
         comment_block = ""
     }
     ' "${file}"
