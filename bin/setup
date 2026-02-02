@@ -55,7 +55,7 @@ main() {
             standard::debug
             ;;
         -h | --help)
-            standard::help
+            standard::help main
             return
             ;;
         -v | --version)
