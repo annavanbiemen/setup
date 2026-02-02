@@ -51,7 +51,7 @@ main() {
             return
             ;;
         -v | --version)
-            standard::version "$@"
+            standard::version
             return
             ;;
         -*) standard::raise standard::error "Unknown option passed: $1" ;;
