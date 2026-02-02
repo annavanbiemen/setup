@@ -6,13 +6,7 @@ set -euo pipefail
 # Import libraries
 source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
 
-# Append missing lines to file
-#
-# Usage: append <file> <line> [<line> ...]
-#
-# Arguments:
-#   file        File to append to
-#   line ...    Lines to append (unless already present) one by one
+# Internal function to append missing lines to file
 append() {
     # Read arguments
     [[ $# -ge 2 ]] || standard::raise standard::error "At least 2 arguments required"
