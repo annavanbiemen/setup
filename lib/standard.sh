@@ -21,7 +21,7 @@ standard::trace() {
     printf "\n\e[4mTrace\e[0m\n"
     local frame arg arg_count arg_pos=${BASH_ARGC[0]} file line call
     for ((frame = 1; frame < ${#FUNCNAME[@]}; frame++)); do
-        arg_count=${BASH_ARGC[frame]}
+        arg_count=${BASH_ARGC[frame]:-0}
         arg_pos=$((arg_pos + arg_count))
 
         file="${BASH_SOURCE[${frame}]}"
