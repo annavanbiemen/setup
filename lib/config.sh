@@ -1,12 +1,12 @@
 # shellcheck shell=bash
 
-# Add lines to configuration file (only if not already present)
+# Does configuration file have this line?
 #
-# Usage: config::add <file> <line> [<line> ...]
+# Usage: config::has <file> <line>
 #
 # Arguments:
-#   file  File to append to
-#   line  Lines to add (unless already present) one by one
+#   file  Configuration file to check
+#   line  Line to check
 config::has() {
     # Read arguments
     local file="$1"
@@ -21,10 +21,10 @@ config::has() {
 
 # Add lines to configuration file (only if not already present)
 #
-# Usage: config::add <file> <line> [<line> ...]
+# Usage: config::add <file> <line>...
 #
 # Arguments:
-#   file      File to append to
+#   file      Configuration file to add lines to
 #   line ...  Lines to add (unless already present) one by one
 config::add() {
     # Read arguments
