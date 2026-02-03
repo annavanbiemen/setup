@@ -3,6 +3,9 @@
 # Exit on errors
 set -euo pipefail
 
+# Import libraries
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib/config.sh"
+
 bold="\e[1m"
 reset="\e[0m"
 
@@ -65,12 +68,12 @@ setup_source_line=". \"${setup_path/"${HOME}"/"\$HOME"}/env\""
 PATH="${setup_path}/bin:${PATH}"
 
 cd ~
-append .profile "${setup_source_line}"
-append .bashrc "${setup_source_line}"
-append .path "${setup_path_relative}/bin"
-append .path ".local/bin" && mkdir -p .local/bin
-append .env "NAME=\"${name}\""
-append .env "EMAIL=\"${email}\""
+config::add .profile "${setup_source_line}"
+config::add .bashrc "${setup_source_line}"
+config::add .path "${setup_path_relative}/bin"
+config::add .path ".local/bin" && mkdir -p .local/bin
+config::add .env "NAME=\"${name}\""
+config::add .env "EMAIL=\"${email}\""
 
 echo
 echo "  Setup done! 🎉"

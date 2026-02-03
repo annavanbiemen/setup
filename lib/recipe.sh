@@ -41,8 +41,8 @@ recipe::composer() {
     require-apt unzip
     require-sh php -- --install-dir="${HOME}/.local/bin" --filename=composer "https://getcomposer.org/installer"
     update --add composer "${HOME}/.local/bin/composer self-update"
-    append ~/.bash_completion 'eval "$(composer completion bash)"'
-    append ~/.path ".config/composer/vendor/bin"
+    config::add ~/.bash_completion 'eval "$(composer completion bash)"'
+    config::add ~/.path ".config/composer/vendor/bin"
     composer --no-ansi --version | head -n1
 }
 
@@ -97,7 +97,7 @@ recipe::github() {
         --source github-cli \
         --uri "https://cli.github.com/packages" \
         --key "https://cli.github.com/packages/githubcli-archive-keyring.gpg"
-    append ~/.bash_completion 'eval "$(gh completion -s bash)"'
+    config::add ~/.bash_completion 'eval "$(gh completion -s bash)"'
     gh --version | head -n1
 }
 
@@ -124,7 +124,7 @@ recipe::node() {
 # https://opencode.ai/download
 recipe::opencode() {
     require-sh bash "https://opencode.ai/install"
-    append ~/.path ".opencode/bin"
+    config::add ~/.path ".opencode/bin"
     update --add opencode "${HOME}/.opencode/bin/opencode update"
     "${HOME}/.opencode/bin/opencode" --version | head -n1
 }
@@ -154,9 +154,9 @@ recipe::pnpm() {
     fi
     update --add pnpm "${HOME}/.local/share/pnpm/pnpm self-update"
     update --add pnpm-packages "${HOME}/.local/share/pnpm/pnpm update --global"
-    append ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
-    append ~/.path ".local/share/pnpm"
-    append ~/.bash_completion 'eval "$(~/.local/share/pnpm/pnpm completion bash)"'
+    config::add ~/.env 'PNPM_HOME="${HOME}/.local/share/pnpm"'
+    config::add ~/.path ".local/share/pnpm"
+    config::add ~/.bash_completion 'eval "$(~/.local/share/pnpm/pnpm completion bash)"'
     "${HOME}/.local/share/pnpm/pnpm" --version | head -n1
 }
 
@@ -164,9 +164,9 @@ recipe::pnpm() {
 recipe::rust() {
     require-sh sh -s -- -y "https://sh.rustup.rs"
     update --add rustup "${HOME}/.cargo/bin/rustup update"
-    append ~/.path ".cargo/bin"
-    append ~/.bash_completion 'eval "$(rustup completions bash cargo)"'
-    append ~/.bash_completion 'eval "$(rustup completions bash rustup)"'
+    config::add ~/.path ".cargo/bin"
+    config::add ~/.bash_completion 'eval "$(rustup completions bash cargo)"'
+    config::add ~/.bash_completion 'eval "$(rustup completions bash rustup)"'
     "${HOME}/.cargo/bin/rustc" --version | head -n1
 }
 
@@ -177,7 +177,7 @@ recipe::symfony() {
     task::run recipe::git
     require-apt curl tar
     require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
-    append ~/.bash_completion 'eval "$(symfony completion bash)"'
+    config::add ~/.bash_completion 'eval "$(symfony completion bash)"'
     symfony --no-ansi version | head -n1
 }
 
@@ -191,8 +191,8 @@ recipe::tilix() {
 recipe::uv() {
     require-sh https://astral.sh/uv/install.sh
     update --add uv "${HOME}/.local/bin/uv self update && ${HOME}/.local/bin/uv tool upgrade --all"
-    append ~/.bash_completion 'eval "$(uv generate-shell-completion bash)"'
-    append ~/.bash_completion 'eval "$(uvx --generate-shell-completion bash)"'
+    config::add ~/.bash_completion 'eval "$(uv generate-shell-completion bash)"'
+    config::add ~/.bash_completion 'eval "$(uvx --generate-shell-completion bash)"'
     uv --version | head -n1
 }
 

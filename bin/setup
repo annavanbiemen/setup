@@ -11,6 +11,7 @@ source ./env
 
 # Import libraries
 source ./lib/standard.sh
+source ./lib/config.sh
 source ./lib/recipe.sh
 source ./lib/task.sh
 

@@ -11,7 +11,6 @@ Anna's local Ubuntu setup repository containing configurations and scripts for m
 ```text
 .
 ├── bin/                    # Executable scripts (added to PATH)
-│   ├── append              # Append lines to files
 │   ├── py                  # Python REPL with rich colors
 │   ├── require-apt         # Install APT packages (with optional custom sources)
 │   ├── require-deb         # Install .deb from remote URL
@@ -19,6 +18,7 @@ Anna's local Ubuntu setup repository containing configurations and scripts for m
 │   ├── setup               # Install entire dev toolchain
 │   └── update              # Update all installed tools
 ├── lib/                    # Shared bash libraries
+│   ├── config.sh           # Configuration file line-editing utilities (has, add)
 │   └── standard.sh         # Standard utilities (raise, help, trace, debug, etc.)
 ├── etc/                    # Configuration files
 │   └── pythonrc            # Python REPL configuration
