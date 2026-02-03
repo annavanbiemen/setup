@@ -3,6 +3,9 @@
 # Track completed tasks
 declare -A _tasks
 
+# Track task order
+declare -a _task_order
+
 # Run a task and its dependencies
 #
 # Usage: task::run <task>
@@ -50,15 +53,19 @@ task::schedule() {
         return 0
     fi
 
-    # Mark as scheduled
+    # Mark as scheduled and track order
     _tasks[${task}]="scheduled"
+    _task_order+=("${task}")
 }
 
 # Get next scheduled task
 #
 # Usage: task::next
+#
+# Returns: Next scheduled task name in insertion order
 task::next() {
-    for task in "${!_tasks[@]}"; do
+    local task
+    for task in "${_task_order[@]}"; do
         if [[ "${_tasks[${task}]}" == "scheduled" ]]; then
             echo "${task}"
             return
