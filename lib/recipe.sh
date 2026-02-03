@@ -200,7 +200,11 @@ recipe::uv() {
 recipe::vim() {
     apt::install vim
     sudo update-alternatives --set editor /usr/bin/vim.basic
-    echo 'SELECTED_EDITOR="/usr/bin/vim.basic"' > ~/.selected_editor
+    # Only write if file doesn't exist or has different content
+    local editor_setting='SELECTED_EDITOR="/usr/bin/vim.basic"'
+    if [[ ! -f ~/.selected_editor ]] || ! grep -Fxq "${editor_setting}" ~/.selected_editor; then
+        echo "${editor_setting}" > ~/.selected_editor
+    fi
     vim --version | head -n1
 }
 
