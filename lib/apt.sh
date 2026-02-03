@@ -90,6 +90,14 @@ apt::source() {
         standard::raise "Missing required arguments. You must specify the source, uri, key, and component."
     fi
 
+    # Validate URL format
+    if [[ ! "${uri}" =~ ^https?:// ]]; then
+        standard::raise "Invalid URI format: ${uri}. Must start with http:// or https://"
+    fi
+    if [[ ! "${key}" =~ ^https?:// ]]; then
+        standard::raise "Invalid key URL format: ${key}. Must start with http:// or https://"
+    fi
+
     # Download the GPG key into a variable ---
     apt::install ca-certificates gpg gpg-agent
     echo "Downloading GPG key from ${key}..."
