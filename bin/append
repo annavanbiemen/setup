@@ -5,25 +5,7 @@ set -euo pipefail
 
 # Import libraries
 source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
-
-# Internal function to append missing lines to file
-append() {
-    # Read arguments
-    local file="$1"
-    local lines=("${@:2}")
-
-    # Iterate over given lines
-    local line
-    for line in "${lines[@]}"; do
-        # Skip line if already present
-        if [[ -f "${file}" ]] && grep -qxF "${line}" "${file}"; then
-            continue
-        fi
-
-        # Append line to file
-        echo "${line}" >> "${file}"
-    done
-}
+source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/config.sh"
 
 # Append missing lines to file
 #
@@ -62,7 +44,7 @@ main() {
     done
 
     # Append lines to file
-    append "${arguments[@]}"
+    config::add "${arguments[@]}"
 }
 
 # Invoke main entrypoint
