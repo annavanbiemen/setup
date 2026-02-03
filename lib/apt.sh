@@ -18,9 +18,9 @@ apt::install() {
 
     # Install missing packages
     if [[ ${#missing[@]} -gt 0 ]]; then
-        local command="sudo DEBIAN_FRONTEND=noninteractive apt-get install --update --yes --no-install-recommends"
-        echo -e "\e[1m${command}" "${missing[@]}" "\e[0m"
-        ${command} "${missing[@]}"
+        local -a install_cmd=(sudo DEBIAN_FRONTEND=noninteractive apt-get install --update --yes --no-install-recommends)
+        echo -e "\e[1m${install_cmd[*]}" "${missing[@]}" "\e[0m"
+        "${install_cmd[@]}" "${missing[@]}"
     fi
 }
 
