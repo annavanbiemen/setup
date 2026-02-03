@@ -1,4 +1,12 @@
 #!/bin/bash
+# Run shellcheck and shfmt to verify shell script quality
+#
+# Usage: ./check.sh
+#
+# Checks:
+#   - Syntax validation with bash and dash
+#   - Linting with shellcheck
+#   - Format verification with shfmt
 
 # Exit on errors
 set -euo pipefail

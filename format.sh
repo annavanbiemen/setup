@@ -1,4 +1,10 @@
 #!/bin/bash
+# Format shell scripts using shfmt
+#
+# Usage: ./format.sh
+#
+# Formats all shell scripts in the repository with consistent indentation
+# and spacing. Uses 4-space indentation and space redirects.
 
 # Exit on errors
 set -euo pipefail

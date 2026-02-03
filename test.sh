@@ -1,4 +1,10 @@
 #!/bin/bash
+# Test all recipes in a Docker container
+#
+# Usage: ./test.sh
+#
+# Builds a Docker image and tests each recipe installation.
+# Logs are written to the log/ directory for each recipe.
 
 # Exit on errors
 set -euo pipefail

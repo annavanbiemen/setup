@@ -1,4 +1,10 @@
 #!/bin/bash
+# Run an interactive demo shell in a Docker container
+#
+# Usage: ./demo.sh
+#
+# Builds a Docker image and launches an interactive bash shell
+# for testing and demonstrating the setup scripts.
 
 # Exit on errors
 set -euo pipefail
