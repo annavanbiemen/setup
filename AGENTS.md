@@ -1,276 +1,78 @@
-# AGENTS.md - Repository Context for AI Agents
+# AGENTS.md - Repository Context
 
-This file provides essential context for AI agents working on this repository.
+Anna's Ubuntu setup repository - shell scripts and recipes for dev environment installation/updates.
 
-## Repository Purpose
+## Design
 
-Anna's local Ubuntu setup repository containing configurations and scripts for managing development environments. Provides a unified toolchain installation and update system using shell scripts and justfile recipes.
+The [install.sh](install.sh) script is used to integrate this setup into a user's home directory. It also asks for your NAME and EMAIL which then are stored as environment variables.
 
-## Directory Structure
+### Home Directory Files
+
+- ~/.env is created to store environment variables
+- ~/.path is created to store $PATH entries
+- ~/.bash_completion is created to store bash completion commands
+- ~/.bashrc and ~/.profile are enhanced to source [env](env) which loads the .env, .path and .bash_completion files into the environment.
+
+## Project Directory Structure
 
 ```text
 .
-├── bin/                    # Executable scripts (added to PATH)
-│   ├── py                  # Python REPL with rich colors
-│   ├── apt::install         # Install APT packages (with optional custom sources)
-│   ├── require-deb         # Install .deb from remote URL
-│   ├── remote::shell          # Download and execute remote shell script
-│   ├── setup               # Install entire dev toolchain
-│   └── update              # Update all installed tools
-├── lib/                    # Shared bash libraries
-│   ├── config.sh           # Configuration file line-editing utilities (has, add)
-│   └── standard.sh         # Standard utilities (raise, help, trace, debug, etc.)
-├── etc/                    # Configuration files
-│   └── pythonrc            # Python REPL configuration
-├── check.sh                # Run shellcheck and shfmt on all scripts
-├── demo.sh                 # Demo script for Docker testing
-├── format.sh               # Auto-format all shell scripts with shfmt
-├── install.sh              # Repository installation script
-├── test.sh                 # Integration tests (Docker-based)
-├── justfile                # Recipe definitions for dev tools (brave, chrome, docker, etc.)
-└── env                     # Load ~/.env and ~/.path files
+├── bin  # Executable bash scripts
+├── etc  # Configuration files
+├── lib  # Shared bash libraries
+└── log  # Test logs (gitignored)
 ```
 
-## Key Architecture Patterns
+### Binaries
 
-### 1. Standard Library
-
-The repository provides a standard library in [lib/standard.sh](lib/standard.sh) with core utilities:
-
-```bash
-# Import pattern used in bin/ scripts
-source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
-```
-
-**Note:** `BASH_SOURCE[0]` is used instead of `$0` to ensure the pattern works correctly even when scripts are sourced (not just executed). `$0` refers to how the script was invoked, while `BASH_SOURCE[0]` always refers to the current script file.
-
-**Available functions:**
-
-- `standard::raise` - Output error messages to stderr
-- `standard::trace` - Print stack trace with arguments
-- `standard::debug` - Enable debug mode with stack traces on errors
-- `standard::with` - Run command with shell option temporarily enabled
-- `standard::help` - Display help information from function comments
-- `standard::version` - Show git version information
-
-### 2. Script Structure Pattern
-
-All `bin/` scripts follow this structure:
-
-```bash
-#!/bin/bash
-
-# Exit on errors
-set -euo pipefail
-
-# Import libraries
-source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"
-
-# [Script description]
-#
-# Usage: script-name <args>
-#
-# Arguments:
-#   arg  Description
-main() {
-    # Implementation
-    # ...
-}
-
-# Invoke main entrypoint
-main "$@"
-```
-
-### 3. The apt and remote libraries
-
-Two core scripts/libraries for package/software installation:
-
-- **apt::install** - Install APT packages (with optional custom sources, GPG keys)
-- **remote::shell** - Download and execute remote shell scripts
-
-These scripts are self-contained and use standard.sh utilities for error handling.
-
-### 4. Justfile Recipes
-
-The [justfile](justfile) contains recipes for installing various development tools:
-
-```bash
-# Install brave browser
-just brave
-
-# Install chrome
-just chrome
-
-# Install docker
-just docker
-```
-
-Each recipe typically uses one or more `require-*` scripts.
-
-## Important Files
-
-### Core Scripts
-
-- **[bin/setup](bin/setup)** - Main entry point for installing dev toolchain (calls just recipes)
-- **[bin/update](bin/update)** - Updates all installed tools
-- **[install.sh](install.sh)** - Repository installation (sets up PATH, configures git, creates ~/.env)
+- [bin/setup](bin/setup) - Recipe based installer
+- [bin/update](bin/update) - Updater for installed recipes
+- [bin/py](bin/py) - Python REPL bootstrap using uv and the rich library
 
 ### Libraries
 
-- **[lib/standard.sh](lib/standard.sh)** - Standard utilities (`standard::raise`, `standard::help`, `standard::trace`, `standard::debug`, `standard::with`, `standard::version`)
-- **[lib/task.sh](lib/task.sh)** - Task dependency management (`task::run`, `task::schedule`, `task::next`, `task::work`, `task::list`, `task::summary`)
-- **[lib/recipe.sh](lib/recipe.sh)** - Installation recipes for development tools (used by justfile). Contains `recipe::*` functions for various tools like docker, brave, pnpm, node, etc. Note: The pnpm recipe backs up and restores `~/.bashrc` to prevent the installer from modifying it.
+- [lib/apt.sh](lib/apt.sh) - APT package manager utilities (install, source)
+- [lib/standard.sh](lib/standard.sh) - Core utilities (raise, help, trace, debug, with, version)
+- [lib/config.sh](lib/config.sh) - Config file editing utilities
+- [lib/recipe.sh](lib/recipe.sh) - Tool installation recipes
+- [lib/remote.sh](lib/remote.sh) - Remote shell script execution utilities for downloading and executing scripts from URLs
+- [lib/task.sh](lib/task.sh) - Task dependency management (run, schedule, work, next, list)
 
-### Testing & Quality
+### Scripts
 
-- **[check.sh](check.sh)** - Runs shellcheck and shfmt (linting + formatting checks)
-- **[format.sh](format.sh)** - Auto-formats all shell scripts
-- **[test.sh](test.sh)** - Docker-based integration tests
+- [check.sh](check.sh) - Run shellcheck + shfmt (always run before committing)
+- [demo.sh](demo.sh) - Demo using interactive shell in a docker container
+- [format.sh](format.sh) - Format code (always run before committing)
+- [test.sh](test.sh) - Test all recipes in a docker container
 
-## Coding Standards
+Before committing, run `./check.sh`, `./format.sh` and `test.sh` to check for defects.
 
-### Shell Scripting
+## Coding Guidelines
 
-1. **Always use strict mode:** `set -euo pipefail`
-2. **Source standard.sh** for all new scripts in `bin/` that need utility functions
-3. **Follow the main() pattern** for executable scripts
-4. **Use standard library functions:** `standard::raise "message"` for error handling
-5. **Declare local variables:** Always use `local` in functions
-6. **Separate declaration from assignment** when using command substitution:
+### Script Details
 
-   ```bash
-   local var
-   var="$(command)"  # Not: local var="$(command)"
-   ```
-
-7. **Quote variables:** Always quote variables unless you need word splitting
-
-### File Organization
-
-- Executables go in `bin/`
-- Libraries go in `lib/`
+- **lib/ modules**: Not executable, use `# shellcheck shell=bash` header
+- **bin/ scripts**: Executable, `#!/bin/bash` shebang, use `set -euo pipefail`, source libs as needed, follow main() pattern
+- **Namespace functions**: `module::function` where `module` matches the filename (e.g., `standard::raise` in standard.sh)
+- **Separate var declaration from assignment**: `local var; var="$(cmd)"` not `local var="$(cmd)"`
+- **Import libraries using BASH_SOURCE[0]**: `source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/standard.sh"`
 
 ### Documentation
 
-- All functions must have documentation comments following this format:
+All functions must have documentation comments following this format:
 
-  ```bash
-  # Brief description
-  #
-  # Usage: function_name <arg1> [arg2]
-  #
-  # Arguments:
-  #   arg1  Description
-  #   arg2  Optional description
-  #
-  # Returns: Description (if applicable)
-  ```
+```bash
+# Brief description
+#
+# Usage: function_name <arg1> [arg2]
+#
+# Arguments:
+#   arg1  Description
+#   arg2  Optional description
+#
+# Returns: Description (if applicable)
+```
 
-## Testing Workflow
+## Security Notes
 
-Before committing changes:
-
-1. **Format:** `./format.sh` - Auto-format all scripts
-2. **Check:** `./check.sh` - Run shellcheck and verify formatting
-3. **Test:** `./test.sh` - Run Docker-based integration tests (if applicable)
-4. **Manual test:** Test affected justfile recipes
-
-## Common Operations
-
-### Adding a new lib/ module
-
-1. Create `lib/module.sh` with `# shellcheck shell=bash` header, the file should NOT be executable itself
-2. Define functions with `module::function` pattern where module matches the module name
-3. Add documentation comments for each function
-4. Source in scripts: `source "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")/lib/module.sh"`
-5. Create function aliases if needed for convenience
-
-### Adding a new bin/ script
-
-1. Create a new bash script with the `#!/bin/bash` shebang
-2. Source standard.sh and create function aliases as needed
-3. Define `main()` function with documentation comments
-4. Add `main "$@"` at the end
-5. Make executable: `chmod +x bin/script`
-6. Test with `./check.sh`
-
-### Adding a New Justfile Recipe
-
-1. Add recipe to [justfile](justfile)
-2. Use `apt::install` and `remote::shell` as needed
-3. Test the recipe: `./test.sh recipe`
-4. Document in comments if the installation is complex
-
-## Dependencies
-
-### Bootstrap Dependencies
-
-- bash
-- curl (installed by remote::shell if needed)
-- ca-certificates (installed by remote::shell if needed)
-
-### Development Dependencies
-
-- shellcheck (for linting)
-- shfmt (for formatting)
-- docker (for integration tests)
-- just (for running recipes)
-
-## Environment Variables
-
-The setup uses `~/.env` for user-specific configuration:
-
-- `NAME` - User's full name (for git config)
-- `EMAIL` - User's email (for git config)
-
-These are loaded via the `env` script.
-
-## Git Workflow
-
-- Repository is designed to be cloned to a user-chosen location
-- `install.sh` adds `bin/` to PATH via `~/.path`
-- Scripts can be called from anywhere after installation
-
-## Security Considerations
-
-### External Script Execution
-
-Several recipes in [lib/recipe.sh](lib/recipe.sh) download and execute scripts from external sources without cryptographic verification:
-
-- `recipe::azurecli` - <https://aka.ms/InstallAzureCLIDeb>
-- `recipe::opencode` - <https://opencode.ai/install>
-- `recipe::pnpm` - <https://get.pnpm.io/install.sh>
-- `recipe::rust` - <https://sh.rustup.rs>
-- `recipe::uv` - <https://astral.sh/uv/install.sh>
-
-**Security assumptions:**
-
-- HTTPS enforced via `--proto '=https'` flag in curl commands
-- Minimum TLS 1.2 required via `--tlsv1.2` flag
-- DNS and network infrastructure are trusted
-- No checksum or signature verification is performed
-
-**Risks:**
-
-- Compromised DNS or network could serve malicious content
-- No protection against supply chain attacks on upstream installers
-
-**Recommendations for maintainers:**
-
-- Consider adding optional checksum verification for critical tools
-- Pin installer script versions where possible
-- Review upstream installer scripts before updating
-- Use official distribution packages when available
-
-## Notes for AI Agents
-
-1. **Never break backward compatibility** - Scripts are used in production
-2. **Always run check.sh** before completing a task
-3. **Test changes** with relevant justfile recipes
-4. **Source standard.sh when needed** - Use standard library functions for error handling and utilities
-5. **Follow the existing code style** - Use `./format.sh` to auto-format
-6. **Document all functions** - Follow the established documentation format
-7. **Use library functions** - Don't duplicate functionality that exists in lib/
-8. **Handle errors gracefully** - Use `standard::raise` to stop execution and show an error message
-9. **Avoid circular dependencies** - Be careful when require-* scripts call each other
-10. **Keep scripts focused** - Each script should do one thing well
+Recipes download/execute external scripts via HTTPS (no checksum verification)
