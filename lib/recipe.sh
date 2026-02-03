@@ -9,25 +9,25 @@ recipe::azure() {
 
 # https://brave.com/linux/
 recipe::brave() {
-    require-apt brave-browser \
-        --source brave-browser \
+    apt::source brave-browser \
         --uri "https://brave-browser-apt-release.s3.brave.com" \
         --key "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
+    apt::install brave-browser
     brave-browser --version | head -n1
 }
 
 # https://www.google.com/chrome/
 recipe::chrome() {
-    require-apt google-chrome-stable \
-        --source google-chrome \
+    apt::source google-chrome \
         --uri "https://dl.google.com/linux/chrome/deb/" \
         --key "https://dl.google.com/linux/linux_signing_key.pub"
+    apt::install google-chrome-stable
     google-chrome --version | head -n1
 }
 
 # https://www.anthropic.com/claude-code
 recipe::claude() {
-    require-apt socat bubblewrap
+    apt::install socat bubblewrap
     require-sh bash "https://claude.ai/install.sh"
     update --add claude "${HOME}/.local/bin/claude update"
     "${HOME}/.local/bin/claude" --version | head -n1
@@ -38,7 +38,7 @@ recipe::claude() {
 recipe::composer() {
     task::run recipe::git
     task::run recipe::php
-    require-apt unzip
+    apt::install unzip
     require-sh php -- --install-dir="${HOME}/.local/bin" --filename=composer "https://getcomposer.org/installer"
     update --add composer "${HOME}/.local/bin/composer self-update"
     config::add ~/.bash_completion 'eval "$(composer completion bash)"'
@@ -48,18 +48,18 @@ recipe::composer() {
 
 # https://direnv.net/
 recipe::direnv() {
-    require-apt direnv
+    apt::install direnv
     direnv --version | head -n1
 }
 
 # https://docs.docker.com/engine/install/ubuntu/
 recipe::docker() {
-    require-apt docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
-        --source docker \
+    apt::source docker \
         --uri "https://download.docker.com/linux/ubuntu" \
         --key "https://download.docker.com/linux/ubuntu/gpg" \
         --suite-codename \
         --component stable
+    apt::install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     sudo usermod -aG docker "$(whoami)"
     docker --version | head -n1
 }
@@ -74,13 +74,13 @@ recipe::gemini() {
 
 # https://www.gimp.org/
 recipe::gimp() {
-    require-apt gimp
+    apt::install gimp
     gimp --version | head -n1
 }
 
 # https://git-scm.com/
 recipe::git() {
-    require-apt git git-absorb
+    apt::install git git-absorb
     [[ -n "${EMAIL:-}" ]] && git config --global user.email "${EMAIL}"
     [[ -n "${NAME:-}" ]] && git config --global user.name "${NAME}"
     git config --global core.autocrlf input
@@ -93,23 +93,23 @@ recipe::git() {
 # Dependencies: git
 recipe::github() {
     task::run recipe::git
-    require-apt gh \
-        --source github-cli \
+    apt::source github-cli \
         --uri "https://cli.github.com/packages" \
         --key "https://cli.github.com/packages/githubcli-archive-keyring.gpg"
+    apt::install gh
     config::add ~/.bash_completion 'eval "$(gh completion -s bash)"'
     gh --version | head -n1
 }
 
 # https://htop.dev/
 recipe::htop() {
-    require-apt htop
+    apt::install htop
     htop --version | head -n1
 }
 
 # https://github.com/casey/just
 recipe::just() {
-    require-apt just
+    apt::install just
     just --version | head -n1
 }
 
@@ -131,11 +131,11 @@ recipe::opencode() {
 
 # https://deb.sury.org/
 recipe::php() {
-    require-apt php php-cli php-mbstring php-xml php-zip \
-        --source ondrej-php \
+    apt::source ondrej-php \
         --uri "https://ppa.launchpadcontent.net/ondrej/php/ubuntu" \
         --key "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB8DC7E53946656EFBCE4C1DD71DAEAAB4AD4CAB6" \
         --suite-codename
+    apt::install php php-cli php-mbstring php-xml php-zip
     php --version | head -n1
 }
 
@@ -175,7 +175,7 @@ recipe::rust() {
 recipe::symfony() {
     task::run recipe::composer
     task::run recipe::git
-    require-apt curl tar
+    apt::install curl tar
     require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
     config::add ~/.bash_completion 'eval "$(symfony completion bash)"'
     symfony --no-ansi version | head -n1
@@ -183,7 +183,7 @@ recipe::symfony() {
 
 # https://gnunn1.github.io/tilix-web/
 recipe::tilix() {
-    require-apt tilix
+    apt::install tilix
     dpkg -s tilix | grep ^Version | head -n1
 }
 
@@ -198,7 +198,7 @@ recipe::uv() {
 
 # https://www.vim.org/
 recipe::vim() {
-    require-apt vim
+    apt::install vim
     sudo update-alternatives --set editor /usr/bin/vim.basic
     echo 'SELECTED_EDITOR="/usr/bin/vim.basic"' > ~/.selected_editor
     vim --version | head -n1
@@ -206,10 +206,10 @@ recipe::vim() {
 
 # https://code.visualstudio.com/
 recipe::vscode() {
-    require-apt code \
-        --source vscode \
+    apt::source vscode \
         --uri "https://packages.microsoft.com/repos/code" \
         --key "https://packages.microsoft.com/keys/microsoft.asc"
+    apt::install code
     update --add code "code --update-extensions"
     code --version | head -n1
 }

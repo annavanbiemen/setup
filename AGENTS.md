@@ -12,7 +12,7 @@ Anna's local Ubuntu setup repository containing configurations and scripts for m
 .
 ├── bin/                    # Executable scripts (added to PATH)
 │   ├── py                  # Python REPL with rich colors
-│   ├── require-apt         # Install APT packages (with optional custom sources)
+│   ├── apt::install         # Install APT packages (with optional custom sources)
 │   ├── require-deb         # Install .deb from remote URL
 │   ├── require-sh          # Download and execute remote shell script
 │   ├── setup               # Install entire dev toolchain
@@ -81,11 +81,11 @@ main() {
 main "$@"
 ```
 
-### 3. The require-* Scripts
+### 3. The apt, deb and shell libraries
 
-Three core scripts for package/software installation:
+Three core scripts/libraries for package/software installation:
 
-- **require-apt** - Install APT packages (with optional custom sources, GPG keys)
+- **apt::install** - Install APT packages (with optional custom sources, GPG keys)
 - **require-deb** - Download and install .deb packages from URLs
 - **require-sh** - Download and execute remote shell scripts
 
@@ -198,7 +198,7 @@ Before committing changes:
 ### Adding a New Justfile Recipe
 
 1. Add recipe to [justfile](justfile)
-2. Use `require-apt`, `require-deb`, or `require-sh` as needed
+2. Use `apt::install`, `require-deb`, or `require-sh` as needed
 3. Test the recipe: `./test.sh recipe`
 4. Document in comments if the installation is complex
 

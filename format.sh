@@ -6,8 +6,11 @@ set -euo pipefail
 # Change directory to the setup home
 cd "$(dirname "$0")"
 
+# Import libraries
+source "./lib/apt.sh"
+
 # Format shell scripts using shfmt
-bin/require-apt shfmt
+apt::install shfmt
 find . -path './.git' -prune -o -type f \( -executable -o -name "*.sh" -o -path './env' \) -exec shfmt --indent 4 --space-redirects --write {} +
 
 # Done!
