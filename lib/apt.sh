@@ -24,6 +24,36 @@ apt::install() {
     fi
 }
 
+# Get a GPG key in armored format
+#
+# Usage: apt::get_key <key_url>
+#
+# Arguments:
+#   key_url  URL to download GPG key from
+#
+# Returns: Armored GPG key content on stdout
+apt::get_key() {
+    local key_url="$1"
+
+    # Validate key URL format
+    if [[ ! "${key_url}" =~ ^https?:// ]]; then
+        standard::raise "Invalid key URL format: ${key_url}. Must start with http:// or https://"
+    fi
+
+    # Create temporary GPG homedir
+    local gpg_home
+    gpg_home=$(mktemp -d)
+    # shellcheck disable=SC2064
+    trap "rm -rf '${gpg_home}'" EXIT
+
+    # Download key and import into GPG
+    curl --proto '=https' --tlsv1.2 -fsSL "${key_url}" |
+        gpg --homedir "${gpg_home}" --import
+
+    # Export armored GPG key
+    gpg --homedir "${gpg_home}" --export --armor
+}
+
 # Add apt source
 #
 # Usage: apt::add_source <source> [options]
@@ -93,22 +123,13 @@ apt::source() {
     if [[ ! "${uri}" =~ ^https?:// ]]; then
         standard::raise "Invalid URI format: ${uri}. Must start with http:// or https://"
     fi
-    if [[ ! "${key}" =~ ^https?:// ]]; then
-        standard::raise "Invalid key URL format: ${key}. Must start with http:// or https://"
-    fi
 
-    # Download the GPG key into a variable ---
+    # Install required packages
     apt::install ca-certificates gpg gpg-agent
-    echo "Downloading GPG key from ${key}..."
-    local gpg_home
-    gpg_home=$(mktemp -d)
-    # shellcheck disable=SC2064
-    trap "rm -rf '${gpg_home}'" EXIT
-    local GPG_KEY_ORIGINAL="${gpg_home}/key.gpg"
-    local GPG_KEY_ARMORED="${gpg_home}/key.asc"
-    curl --proto '=https' --tlsv1.2 -fsSL "${key}" > "${GPG_KEY_ORIGINAL}"
-    gpg --homedir "${gpg_home}" --import "${GPG_KEY_ORIGINAL}"
-    gpg --homedir "${gpg_home}" --export --armor > "${GPG_KEY_ARMORED}"
+
+    # Get armored GPG key
+    local gpg_key_armored
+    gpg_key_armored="$(apt::get_key "${key}")"
 
     # Create the sources file in DEB822 format with the embedded key
     {
@@ -118,6 +139,7 @@ apt::source() {
         echo "Components: ${component}"
         echo "Architectures: ${architecture}"
         echo "Signed-By: |"
-        sed 's/^/ /' "${GPG_KEY_ARMORED}"
+        # shellcheck disable=SC2001
+        echo "${gpg_key_armored}" | sed 's/^/ /'
     } | sudo tee "/etc/apt/sources.list.d/${source}.sources"
 }
