@@ -127,7 +127,7 @@ update::execute() {
 # Usage: update [options]
 #
 # Options:
-#   -a. --add <name> <command>  Add named update command
+#   -a, --add <name> <command>  Add named update command
 #   -d, --debug                 Show debug information
 #   -h, --help                  Show help information
 #   -r, --remove <name>         Remove named update command"
