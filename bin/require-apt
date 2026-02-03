@@ -101,7 +101,8 @@ main() {
         echo "Downloading GPG key from ${source_key}..."
         local GPG_HOME
         GPG_HOME=$(mktemp -d)
-        trap 'rm -rf "${GPG_HOME}"' EXIT
+        # shellcheck disable=SC2064
+        trap "rm -rf '${GPG_HOME}'" EXIT
         local GPG_KEY_ORIGINAL="${GPG_HOME}/key.gpg"
         local GPG_KEY_ARMORED="${GPG_HOME}/key.asc"
         curl --proto '=https' --tlsv1.2 -fsSL "${source_key}" > "${GPG_KEY_ORIGINAL}"
