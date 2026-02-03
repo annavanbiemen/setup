@@ -2,7 +2,7 @@
 
 # https://github.com/Azure/azure-cli
 recipe::azure() {
-    require-sh sudo bash "https://aka.ms/InstallAzureCLIDeb"
+    remote::shell sudo bash "https://aka.ms/InstallAzureCLIDeb"
     update --add az "sudo /usr/bin/az upgrade"
     az --version | head -n1
 }
@@ -28,7 +28,7 @@ recipe::chrome() {
 # https://www.anthropic.com/claude-code
 recipe::claude() {
     apt::install socat bubblewrap
-    require-sh bash "https://claude.ai/install.sh"
+    remote::shell bash "https://claude.ai/install.sh"
     update --add claude "${HOME}/.local/bin/claude update"
     "${HOME}/.local/bin/claude" --version | head -n1
 }
@@ -39,7 +39,7 @@ recipe::composer() {
     task::run recipe::git
     task::run recipe::php
     apt::install unzip
-    require-sh php -- --install-dir="${HOME}/.local/bin" --filename=composer "https://getcomposer.org/installer"
+    remote::shell php -- --install-dir="${HOME}/.local/bin" --filename=composer "https://getcomposer.org/installer"
     update --add composer "${HOME}/.local/bin/composer self-update"
     config::add ~/.bash_completion 'eval "$(composer completion bash)"'
     config::add ~/.path ".config/composer/vendor/bin"
@@ -123,7 +123,7 @@ recipe::node() {
 
 # https://opencode.ai/download
 recipe::opencode() {
-    require-sh bash "https://opencode.ai/install"
+    remote::shell bash "https://opencode.ai/install"
     config::add ~/.path ".opencode/bin"
     update --add opencode "${HOME}/.opencode/bin/opencode update"
     "${HOME}/.opencode/bin/opencode" --version | head -n1
@@ -145,7 +145,7 @@ recipe::pnpm() {
     export PATH="${PNPM_HOME}:${PATH}"
     if [[ ! -f "${HOME}/.local/share/pnpm/pnpm" ]]; then
         cp -p "${HOME}/.bashrc" "${HOME}/.bashrc.bak"
-        if require-sh bash https://get.pnpm.io/install.sh; then
+        if remote::shell bash https://get.pnpm.io/install.sh; then
             rm "${HOME}/.bashrc.bak"
         else
             mv "${HOME}/.bashrc.bak" "${HOME}/.bashrc"
@@ -162,7 +162,7 @@ recipe::pnpm() {
 
 # https://rustup.rs/
 recipe::rust() {
-    require-sh sh -s -- -y "https://sh.rustup.rs"
+    remote::shell sh -s -- -y "https://sh.rustup.rs"
     update --add rustup "${HOME}/.cargo/bin/rustup update"
     config::add ~/.path ".cargo/bin"
     config::add ~/.bash_completion 'eval "$(rustup completions bash cargo)"'
@@ -176,7 +176,7 @@ recipe::symfony() {
     task::run recipe::composer
     task::run recipe::git
     apt::install curl tar
-    require-sh bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
+    remote::shell bash -s -- --install-dir="${HOME}/.local/bin" "https://get.symfony.com/cli/installer"
     config::add ~/.bash_completion 'eval "$(symfony completion bash)"'
     symfony --no-ansi version | head -n1
 }
@@ -189,7 +189,7 @@ recipe::tilix() {
 
 # https://docs.astral.sh/uv/
 recipe::uv() {
-    require-sh https://astral.sh/uv/install.sh
+    remote::shell https://astral.sh/uv/install.sh
     update --add uv "${HOME}/.local/bin/uv self update && ${HOME}/.local/bin/uv tool upgrade --all"
     config::add ~/.bash_completion 'eval "$(uv generate-shell-completion bash)"'
     config::add ~/.bash_completion 'eval "$(uvx --generate-shell-completion bash)"'

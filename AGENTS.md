@@ -14,7 +14,7 @@ Anna's local Ubuntu setup repository containing configurations and scripts for m
 │   ├── py                  # Python REPL with rich colors
 │   ├── apt::install         # Install APT packages (with optional custom sources)
 │   ├── require-deb         # Install .deb from remote URL
-│   ├── require-sh          # Download and execute remote shell script
+│   ├── remote::shell          # Download and execute remote shell script
 │   ├── setup               # Install entire dev toolchain
 │   └── update              # Update all installed tools
 ├── lib/                    # Shared bash libraries
@@ -81,13 +81,12 @@ main() {
 main "$@"
 ```
 
-### 3. The apt, deb and shell libraries
+### 3. The apt and remote libraries
 
-Three core scripts/libraries for package/software installation:
+Two core scripts/libraries for package/software installation:
 
 - **apt::install** - Install APT packages (with optional custom sources, GPG keys)
-- **require-deb** - Download and install .deb packages from URLs
-- **require-sh** - Download and execute remote shell scripts
+- **remote::shell** - Download and execute remote shell scripts
 
 These scripts are self-contained and use standard.sh utilities for error handling.
 
@@ -198,7 +197,7 @@ Before committing changes:
 ### Adding a New Justfile Recipe
 
 1. Add recipe to [justfile](justfile)
-2. Use `apt::install`, `require-deb`, or `require-sh` as needed
+2. Use `apt::install` and `remote::shell` as needed
 3. Test the recipe: `./test.sh recipe`
 4. Document in comments if the installation is complex
 
@@ -207,8 +206,8 @@ Before committing changes:
 ### Bootstrap Dependencies
 
 - bash
-- curl (installed by require-sh if needed)
-- ca-certificates (installed by require-sh if needed)
+- curl (installed by remote::shell if needed)
+- ca-certificates (installed by remote::shell if needed)
 
 ### Development Dependencies
 
