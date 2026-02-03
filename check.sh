@@ -9,7 +9,7 @@ cd "$(dirname "$0")"
 # Lint scripts using bash (and POSIX-compatible dash in case of `env`)
 bin/require-apt dash bash
 dash -n env
-find . -path './.git' -prune -o -type f \( -executable -o -name "*.sh" -o -path './env' \) -exec bash -x -n {} +
+find . -path './.git' -prune -o -type f \( -executable -o -name "*.sh" -o -path './env' \) -exec bash -x -n {} ';'
 
 # Run shellcheck on all scripts
 bin/require-apt shellcheck
