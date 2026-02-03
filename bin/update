@@ -71,7 +71,9 @@ update::install_sudoers() {
 }
 
 # Update
-update() {
+#
+# Usage: update::execute
+update::execute() {
     local bold="\e[1m"
     local red="\e[31m"
     local reset="\e[0m"
@@ -135,7 +137,7 @@ update() {
 # Arguments:
 #   name     Name can only contain alphanumeric characters, dashes and underscores
 #   command  Command to add
-main() {
+update::main() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -a | --add)
@@ -149,7 +151,7 @@ main() {
             standard::debug
             ;;
         -h | --help)
-            standard::help main
+            standard::help update::main
             return
             ;;
         -i | --install-sudoers)
@@ -177,8 +179,8 @@ main() {
         shift
     done
 
-    update
+    update::execute
 }
 
 # Invoke main entrypoint
-main "$@"
+update::main "$@"
