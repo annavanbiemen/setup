@@ -121,6 +121,13 @@ recipe::node() {
     node --version | head -n1
 }
 
+# https://ollama.com/download/linux
+recipe::ollama() {
+    apt::install zstd
+    remote::shell sh https://ollama.com/install.sh
+    ollama --version | tail -n1
+}
+
 # https://opencode.ai/download
 recipe::opencode() {
     remote::shell bash "https://opencode.ai/install"
