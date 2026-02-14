@@ -43,7 +43,15 @@ if [ -f ~/.path ]; then
 fi
 
 # Include VIRTUAL_ENV_PROMPT in the prompt
-if [ "${VIRTUAL_ENV_DISABLE_PROMPT:-}" != "1" ] && [ -n "${PS1+x}" ]; then
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
-    PS1='${VIRTUAL_ENV_PROMPT:+($VIRTUAL_ENV_PROMPT) }'${PS1}
+if [ -n "${PS1+x}" ]; then
+    case "${PS1}" in
+    '${VIRTUAL_ENV_PROMPT:+('*)
+        # Already has virtual env prompt, do nothing
+        ;;
+    *)
+        # Add virtual env prompt
+        export VIRTUAL_ENV_DISABLE_PROMPT=1
+        PS1='${VIRTUAL_ENV_PROMPT:+($VIRTUAL_ENV_PROMPT) }'${PS1}
+        ;;
+    esac
 fi
