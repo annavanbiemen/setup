@@ -188,6 +188,12 @@ recipe::symfony() {
     symfony --no-ansi version | head -n1
 }
 
+# https://github.com/tmux/tmux/wiki/Installing
+recipe::tmux() {
+    apt::install tmux
+    tmux -V | head -n1
+}
+
 # https://gnunn1.github.io/tilix-web/
 recipe::tilix() {
     apt::install tilix
