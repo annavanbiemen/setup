@@ -16,6 +16,13 @@ recipe::brave() {
     brave-browser --version | head -n1
 }
 
+# https://github.com/aristocratos/btop
+recipe::btop() {
+    apt::install btop
+    btop --version | head -n1
+}
+
+
 # https://www.google.com/chrome/
 recipe::chrome() {
     apt::source google-chrome \
